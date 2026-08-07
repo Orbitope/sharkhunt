@@ -1,0 +1,24 @@
+[project]
+name = "sharkhunt"
+version = "0.1.0"
+description = "Wager-aware sequential detection of rating manipulators in skill-based wagering"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "pymc>=5.16",
+    "arviz>=0.18",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["sharkhunt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: runs an MCMC fit; minutes, not seconds"]

@@ -1,0 +1,892 @@
+{
+  "config": {
+    "wald_lower": -4.59511985013459,
+    "wald_upper": 4.59511985013459,
+    "stakes": [
+      0.1,
+      0.4,
+      1.0
+    ],
+    "rake": 0.05,
+    "population_profile": [
+      0.35,
+      0.38,
+      0.27
+    ],
+    "default_delta": 400.0,
+    "quick": false
+  },
+  "evidence_table": {
+    "expected": 0.5,
+    "pinning_tank_rate": 0.4601226993865031,
+    "tiers": [
+      "min",
+      "mid",
+      "max"
+    ],
+    "joint": {
+      "min": {
+        "loss": 0.6660524740323518,
+        "win": -1.7166503707236676
+      },
+      "mid": {
+        "loss": -0.617610274562402,
+        "win": -0.4223981079373697
+      },
+      "max": {
+        "loss": -0.8639470917695559,
+        "win": 0.9354203801432172
+      }
+    },
+    "weighted_multiplier": {
+      "min": 0.1,
+      "mid": 0.4,
+      "max": 1.0
+    }
+  },
+  "pinning_curve": [
+    {
+      "expected": 0.3,
+      "delta": 200,
+      "tank_rate": 0.4958758679858213
+    },
+    {
+      "expected": 0.4,
+      "delta": 200,
+      "tank_rate": 0.4227282579275467
+    },
+    {
+      "expected": 0.5,
+      "delta": 200,
+      "tank_rate": 0.3511294434502872
+    },
+    {
+      "expected": 0.6,
+      "delta": 200,
+      "tank_rate": 0.28029666131325076
+    },
+    {
+      "expected": 0.7,
+      "delta": 200,
+      "tank_rate": 0.20989857679978585
+    },
+    {
+      "expected": 0.3,
+      "delta": 400,
+      "tank_rate": 0.6459330143540669
+    },
+    {
+      "expected": 0.4,
+      "delta": 400,
+      "tank_rate": 0.5527123848515865
+    },
+    {
+      "expected": 0.5,
+      "delta": 400,
+      "tank_rate": 0.4601226993865031
+    },
+    {
+      "expected": 0.6,
+      "delta": 400,
+      "tank_rate": 0.36784741144414174
+    },
+    {
+      "expected": 0.7,
+      "delta": 400,
+      "tank_rate": 0.2757513860519405
+    },
+    {
+      "expected": 0.3,
+      "delta": 600,
+      "tank_rate": 0.6927411785956316
+    },
+    {
+      "expected": 0.4,
+      "delta": 600,
+      "tank_rate": 0.5934585083816095
+    },
+    {
+      "expected": 0.5,
+      "delta": 600,
+      "tank_rate": 0.4943890722478349
+    },
+    {
+      "expected": 0.6,
+      "delta": 600,
+      "tank_rate": 0.3954261384270399
+    },
+    {
+      "expected": 0.7,
+      "delta": 600,
+      "tank_rate": 0.29652402097796055
+    },
+    {
+      "expected": 0.3,
+      "delta": 800,
+      "tank_rate": 0.7074797522629823
+    },
+    {
+      "expected": 0.4,
+      "delta": 800,
+      "tank_rate": 0.6063080534857609
+    },
+    {
+      "expected": 0.5,
+      "delta": 800,
+      "tank_rate": 0.5052051439069197
+    },
+    {
+      "expected": 0.6,
+      "delta": 800,
+      "tank_rate": 0.4041366172268336
+    },
+    {
+      "expected": 0.7,
+      "delta": 800,
+      "tank_rate": 0.3030877336210165
+    }
+  ],
+  "archetype_table": {
+    "honest-cautious": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.5005416666666667,
+      "profit_per_match": -0.012334833333333338,
+      "rating_drift": 0.6357835638055065,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.8866666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -8.388216335638182,
+          "final_score_sd": 3.9093801868114464
+        },
+        "weighted": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.03,
+          "median_matches_to_flag": null,
+          "final_score_mean": -1.9029542450021342,
+          "final_score_sd": 1.2553961989770945
+        },
+        "joint": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -219.2223167419774,
+          "final_score_sd": 18.68142159719108
+        },
+        "hierarchical": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -333.3234679675055,
+          "final_score_sd": 22.824835191383507
+        },
+        "mixture": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -360.7648189159278,
+          "final_score_sd": 22.15043581190036
+        }
+      }
+    },
+    "honest-typical": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.5005416666666667,
+      "profit_per_match": -0.025253583333333374,
+      "rating_drift": 0.6357835638055065,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.8866666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -8.388216335638182,
+          "final_score_sd": 3.9093801868114464
+        },
+        "weighted": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.5366666666666666,
+          "median_matches_to_flag": null,
+          "final_score_mean": -4.193279487441528,
+          "final_score_sd": 2.2697844344430385
+        },
+        "joint": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -155.07332234939867,
+          "final_score_sd": 15.444918623362868
+        },
+        "hierarchical": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -180.33704185696251,
+          "final_score_sd": 17.175592882330307
+        },
+        "mixture": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -174.3113110242784,
+          "final_score_sd": 17.442947315712548
+        }
+      }
+    },
+    "honest-aggressive": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.5005416666666667,
+      "profit_per_match": -0.037023083333333394,
+      "rating_drift": 0.6357835638055065,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.8866666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -8.388216335638182,
+          "final_score_sd": 3.9093801868114464
+        },
+        "weighted": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.77,
+          "median_matches_to_flag": null,
+          "final_score_mean": -6.144259171180666,
+          "final_score_sd": 3.190578823437771
+        },
+        "joint": {
+          "accused_rate": 0.11333333333333333,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 21.5,
+          "final_score_mean": -63.15973155048675,
+          "final_score_sd": 18.265631920106003
+        },
+        "hierarchical": {
+          "accused_rate": 0.006666666666666667,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 14.0,
+          "final_score_mean": -170.26421227529514,
+          "final_score_sd": 17.723349499801987
+        },
+        "mixture": {
+          "accused_rate": 0.013333333333333334,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 13.5,
+          "final_score_mean": -135.74592124271248,
+          "final_score_sd": 16.254815047727632
+        }
+      }
+    },
+    "whale": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.5005416666666667,
+      "profit_per_match": -0.04897083333333347,
+      "rating_drift": 0.6357835638055065,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.8866666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -8.388216335638182,
+          "final_score_sd": 3.9093801868114464
+        },
+        "weighted": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.8866666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -8.388216335638182,
+          "final_score_sd": 3.9093801868114464
+        },
+        "joint": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.25666666666666665,
+          "median_matches_to_flag": 27.0,
+          "final_score_mean": 43.3048922175794,
+          "final_score_sd": 17.37911499675098
+        },
+        "hierarchical": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -453.8213677856575,
+          "final_score_sd": 17.379114996751
+        },
+        "mixture": {
+          "accused_rate": 0.006666666666666667,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 6.5,
+          "final_score_mean": -387.2203949470769,
+          "final_score_sd": 16.63017292300779
+        }
+      }
+    },
+    "tilter": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.5005416666666667,
+      "profit_per_match": -0.029840833333333372,
+      "rating_drift": 0.6357835638055065,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.8866666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -8.388216335638182,
+          "final_score_sd": 3.9093801868114464
+        },
+        "weighted": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.6266666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -4.863008106486746,
+          "final_score_sd": 2.6830800600674034
+        },
+        "joint": {
+          "accused_rate": 0.0033333333333333335,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 57,
+          "final_score_mean": -121.00046835923305,
+          "final_score_sd": 16.738721168578046
+        },
+        "hierarchical": {
+          "accused_rate": 0.0033333333333333335,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 19,
+          "final_score_mean": -152.82041275580343,
+          "final_score_sd": 16.375046740776114
+        },
+        "mixture": {
+          "accused_rate": 0.0,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": null,
+          "final_score_mean": -136.1463074333922,
+          "final_score_sd": 15.70977988273811
+        }
+      }
+    },
+    "shark-blatant": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.901475,
+      "profit_per_match": 0.5721695000000038,
+      "rating_drift": 3850.0969985620595,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.0,
+          "median_matches_to_flag": 56.0,
+          "final_score_mean": 33.67988881859626,
+          "final_score_sd": 3.9522724338965958
+        },
+        "weighted": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.0,
+          "median_matches_to_flag": 68.0,
+          "final_score_mean": 27.073842920130787,
+          "final_score_sd": 3.2877353317770424
+        },
+        "joint": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.0033333333333333335,
+          "median_matches_to_flag": 9.5,
+          "final_score_mean": 176.71725799949684,
+          "final_score_sd": 16.14111491365817
+        },
+        "hierarchical": {
+          "accused_rate": 0.8633333333333333,
+          "cleared_rate": 0.5033333333333333,
+          "median_matches_to_flag": 21,
+          "final_score_mean": -0.2553192945169086,
+          "final_score_sd": 10.664642139252699
+        },
+        "mixture": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.006666666666666667,
+          "median_matches_to_flag": 13.0,
+          "final_score_mean": 47.670730916403095,
+          "final_score_sd": 10.25372326817993
+        }
+      }
+    },
+    "shark-pinned": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.4995583333333333,
+      "profit_per_match": 0.22327733333333383,
+      "rating_drift": -8.303001437940441,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.006666666666666667,
+          "cleared_rate": 0.89,
+          "median_matches_to_flag": 181.5,
+          "final_score_mean": -8.168828440803953,
+          "final_score_sd": 4.108345739974054
+        },
+        "weighted": {
+          "accused_rate": 0.7166666666666667,
+          "cleared_rate": 0.0,
+          "median_matches_to_flag": 252,
+          "final_score_mean": 5.733823297926104,
+          "final_score_sd": 2.6560509030336137
+        },
+        "joint": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.0033333333333333335,
+          "median_matches_to_flag": 14.0,
+          "final_score_mean": 120.62005598091771,
+          "final_score_sd": 14.113544180150376
+        },
+        "hierarchical": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.0033333333333333335,
+          "median_matches_to_flag": 14.0,
+          "final_score_mean": 98.77481506599236,
+          "final_score_sd": 11.508699061628551
+        },
+        "mixture": {
+          "accused_rate": 1.0,
+          "cleared_rate": 0.013333333333333334,
+          "median_matches_to_flag": 16.0,
+          "final_score_mean": 84.21399092830946,
+          "final_score_sd": 11.526563509654071
+        }
+      }
+    },
+    "shark-partial": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.4995583333333333,
+      "profit_per_match": 0.10396283333333305,
+      "rating_drift": -8.303001437940441,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.006666666666666667,
+          "cleared_rate": 0.89,
+          "median_matches_to_flag": 181.5,
+          "final_score_mean": -8.168828440803953,
+          "final_score_sd": 4.108345739974054
+        },
+        "weighted": {
+          "accused_rate": 0.13,
+          "cleared_rate": 0.03333333333333333,
+          "median_matches_to_flag": 281,
+          "final_score_mean": 0.9422453200008382,
+          "final_score_sd": 2.5823168872756446
+        },
+        "joint": {
+          "accused_rate": 0.8433333333333334,
+          "cleared_rate": 0.73,
+          "median_matches_to_flag": 40,
+          "final_score_mean": 4.435379265001116,
+          "final_score_sd": 16.482835335799948
+        },
+        "hierarchical": {
+          "accused_rate": 0.6033333333333334,
+          "cleared_rate": 0.9433333333333334,
+          "median_matches_to_flag": 33,
+          "final_score_mean": -17.92503276255399,
+          "final_score_sd": 15.706111525938843
+        },
+        "mixture": {
+          "accused_rate": 0.49333333333333335,
+          "cleared_rate": 0.9566666666666667,
+          "median_matches_to_flag": 35.0,
+          "final_score_mean": -20.975233478549715,
+          "final_score_sd": 14.863661787483768
+        }
+      }
+    },
+    "shark-hidden": {
+      "trials": 300,
+      "matches": 400,
+      "win_rate": 0.4995583333333333,
+      "profit_per_match": -0.014652166666666692,
+      "rating_drift": -8.303001437940441,
+      "detectors": {
+        "outcome": {
+          "accused_rate": 0.006666666666666667,
+          "cleared_rate": 0.89,
+          "median_matches_to_flag": 181.5,
+          "final_score_mean": -8.168828440803953,
+          "final_score_sd": 4.108345739974054
+        },
+        "weighted": {
+          "accused_rate": 0.0,
+          "cleared_rate": 0.4866666666666667,
+          "median_matches_to_flag": null,
+          "final_score_mean": -3.8887820397460966,
+          "final_score_sd": 2.5984861022439043
+        },
+        "joint": {
+          "accused_rate": 0.03333333333333333,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 11.5,
+          "final_score_mean": -111.25775880051862,
+          "final_score_sd": 16.89706637903266
+        },
+        "hierarchical": {
+          "accused_rate": 0.013333333333333334,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 15.5,
+          "final_score_mean": -133.09814807321035,
+          "final_score_sd": 16.73383112638728
+        },
+        "mixture": {
+          "accused_rate": 0.016666666666666666,
+          "cleared_rate": 1.0,
+          "median_matches_to_flag": 17,
+          "final_score_mean": -124.81435045576197,
+          "final_score_sd": 15.429213333762723
+        }
+      }
+    }
+  },
+  "calibration_by_betting_habit": {
+    "honest-cautious": {
+      "outcome": 0.9166666666666666,
+      "weighted": 0.02,
+      "joint": 1.0,
+      "hierarchical": 1.0,
+      "mixture": 1.0
+    },
+    "honest-typical": {
+      "outcome": 0.9166666666666666,
+      "weighted": 0.4666666666666667,
+      "joint": 1.0,
+      "hierarchical": 1.0,
+      "mixture": 1.0
+    },
+    "honest-aggressive": {
+      "outcome": 0.9166666666666666,
+      "weighted": 0.7666666666666667,
+      "joint": 1.0,
+      "hierarchical": 1.0,
+      "mixture": 1.0
+    },
+    "whale": {
+      "outcome": 0.9166666666666666,
+      "weighted": 0.9166666666666666,
+      "joint": 1.0,
+      "hierarchical": 1.0,
+      "mixture": 1.0
+    }
+  },
+  "prior_strength_sweep": [
+    {
+      "strength": 0.25,
+      "shark_caught": 1.0,
+      "whale_accused": 0.0,
+      "honest_accused": 0.125
+    },
+    {
+      "strength": 0.5,
+      "shark_caught": 1.0,
+      "whale_accused": 0.0,
+      "honest_accused": 0.06666666666666667
+    },
+    {
+      "strength": 1,
+      "shark_caught": 1.0,
+      "whale_accused": 0.0,
+      "honest_accused": 0.025
+    },
+    {
+      "strength": 2,
+      "shark_caught": 1.0,
+      "whale_accused": 0.0,
+      "honest_accused": 0.008333333333333333
+    },
+    {
+      "strength": 4,
+      "shark_caught": 1.0,
+      "whale_accused": 0.0,
+      "honest_accused": 0.0
+    },
+    {
+      "strength": 8,
+      "shark_caught": 1.0,
+      "whale_accused": 0.0,
+      "honest_accused": 0.0
+    },
+    {
+      "strength": 16,
+      "shark_caught": 1.0,
+      "whale_accused": 0.0,
+      "honest_accused": 0.0
+    },
+    {
+      "strength": 32,
+      "shark_caught": 1.0,
+      "whale_accused": 0.03333333333333333,
+      "honest_accused": 0.0
+    },
+    {
+      "strength": 64,
+      "shark_caught": 1.0,
+      "whale_accused": 0.10833333333333334,
+      "honest_accused": 0.0
+    },
+    {
+      "strength": 128,
+      "shark_caught": 1.0,
+      "whale_accused": 0.25833333333333336,
+      "honest_accused": 0.0
+    },
+    {
+      "strength": 400,
+      "shark_caught": 1.0,
+      "whale_accused": 0.5333333333333333,
+      "honest_accused": 0.0
+    }
+  ],
+  "economics_curve": {
+    "honest_baseline_profit_per_match": -0.02209049999999999,
+    "rake": 0.05,
+    "curve": [
+      {
+        "bet_correlation": 1.0,
+        "profit_per_match": 0.22277708333333485,
+        "profit_sd": 0.020871476977331778,
+        "caught_rate": 1.0,
+        "median_matches_to_flag": 15.0
+      },
+      {
+        "bet_correlation": 0.9,
+        "profit_per_match": 0.1974695833333345,
+        "profit_sd": 0.02080639788339047,
+        "caught_rate": 1.0,
+        "median_matches_to_flag": 16.5
+      },
+      {
+        "bet_correlation": 0.75,
+        "profit_per_match": 0.16191708333333404,
+        "profit_sd": 0.02210473255244884,
+        "caught_rate": 1.0,
+        "median_matches_to_flag": 18.5
+      },
+      {
+        "bet_correlation": 0.6,
+        "profit_per_match": 0.12716833333333347,
+        "profit_sd": 0.022683404604345883,
+        "caught_rate": 0.85,
+        "median_matches_to_flag": 28.5
+      },
+      {
+        "bet_correlation": 0.5,
+        "profit_per_match": 0.10212708333333317,
+        "profit_sd": 0.021435181584223136,
+        "caught_rate": 0.575,
+        "median_matches_to_flag": 31
+      },
+      {
+        "bet_correlation": 0.4,
+        "profit_per_match": 0.0779158333333331,
+        "profit_sd": 0.02216325912092156,
+        "caught_rate": 0.325,
+        "median_matches_to_flag": 18
+      },
+      {
+        "bet_correlation": 0.25,
+        "profit_per_match": 0.043325833333333175,
+        "profit_sd": 0.024143445726071782,
+        "caught_rate": 0.2,
+        "median_matches_to_flag": 18.0
+      },
+      {
+        "bet_correlation": 0.1,
+        "profit_per_match": 0.0069795833333333,
+        "profit_sd": 0.023658661054293494,
+        "caught_rate": 0.1,
+        "median_matches_to_flag": 19.0
+      },
+      {
+        "bet_correlation": 0.0,
+        "profit_per_match": -0.0168629166666667,
+        "profit_sd": 0.02461908205468433,
+        "caught_rate": 0.1,
+        "median_matches_to_flag": 21.0
+      }
+    ]
+  },
+  "hidden_skill_sweep": [
+    {
+      "hidden_delta": 100,
+      "pinning_tank_rate": 0.2258876083110818,
+      "caught_rate": 0.7333333333333333,
+      "median_matches_to_flag": 37.0,
+      "profit_per_match": 0.09156624999999972
+    },
+    {
+      "hidden_delta": 200,
+      "pinning_tank_rate": 0.3511294434502872,
+      "caught_rate": 1.0,
+      "median_matches_to_flag": 23.5,
+      "profit_per_match": 0.16393499999999978
+    },
+    {
+      "hidden_delta": 300,
+      "pinning_tank_rate": 0.42100342135669694,
+      "caught_rate": 1.0,
+      "median_matches_to_flag": 19.5,
+      "profit_per_match": 0.20577583333333357
+    },
+    {
+      "hidden_delta": 400,
+      "pinning_tank_rate": 0.4601226993865031,
+      "caught_rate": 1.0,
+      "median_matches_to_flag": 16.0,
+      "profit_per_match": 0.23172583333333394
+    },
+    {
+      "hidden_delta": 600,
+      "pinning_tank_rate": 0.4943890722478349,
+      "caught_rate": 1.0,
+      "median_matches_to_flag": 14.0,
+      "profit_per_match": 0.2531816666666675
+    },
+    {
+      "hidden_delta": 800,
+      "pinning_tank_rate": 0.5052051439069197,
+      "caught_rate": 1.0,
+      "median_matches_to_flag": 14.0,
+      "profit_per_match": 0.2613708333333343
+    }
+  ],
+  "field_study": {
+    "n_players": 2000,
+    "matches": 300,
+    "shark_fraction": 0.05,
+    "rates": {
+      "outcome": {
+        "detector": "outcome",
+        "n_honest": 1909,
+        "n_sharks": 91,
+        "false_positive_rate": 0.008381351492928235,
+        "true_positive_rate": 0.0,
+        "median_matches_to_catch": null
+      },
+      "weighted": {
+        "detector": "weighted",
+        "n_honest": 1909,
+        "n_sharks": 91,
+        "false_positive_rate": 0.0010476689366160294,
+        "true_positive_rate": 0.5494505494505495,
+        "median_matches_to_catch": 218
+      },
+      "joint": {
+        "detector": "joint",
+        "n_honest": 1909,
+        "n_sharks": 91,
+        "false_positive_rate": 0.071765322158198,
+        "true_positive_rate": 1.0,
+        "median_matches_to_catch": 13
+      },
+      "hierarchical": {
+        "detector": "hierarchical",
+        "n_honest": 1909,
+        "n_sharks": 91,
+        "false_positive_rate": 0.005238344683080147,
+        "true_positive_rate": 1.0,
+        "median_matches_to_catch": 14
+      },
+      "mixture": {
+        "detector": "mixture",
+        "n_honest": 1909,
+        "n_sharks": 91,
+        "false_positive_rate": 0.006286013619696176,
+        "true_positive_rate": 1.0,
+        "median_matches_to_catch": 16
+      }
+    },
+    "false_positives_by_archetype": {
+      "outcome": {
+        "honest": {
+          "flagged": 14,
+          "n": 1665,
+          "rate": 0.008408408408408409
+        },
+        "whale": {
+          "flagged": 0,
+          "n": 99,
+          "rate": 0.0
+        },
+        "tilter": {
+          "flagged": 2,
+          "n": 145,
+          "rate": 0.013793103448275862
+        }
+      },
+      "weighted": {
+        "honest": {
+          "flagged": 2,
+          "n": 1665,
+          "rate": 0.0012012012012012011
+        },
+        "whale": {
+          "flagged": 0,
+          "n": 99,
+          "rate": 0.0
+        },
+        "tilter": {
+          "flagged": 0,
+          "n": 145,
+          "rate": 0.0
+        }
+      },
+      "joint": {
+        "honest": {
+          "flagged": 37,
+          "n": 1665,
+          "rate": 0.022222222222222223
+        },
+        "whale": {
+          "flagged": 99,
+          "n": 99,
+          "rate": 1.0
+        },
+        "tilter": {
+          "flagged": 1,
+          "n": 145,
+          "rate": 0.006896551724137931
+        }
+      },
+      "hierarchical": {
+        "honest": {
+          "flagged": 7,
+          "n": 1665,
+          "rate": 0.004204204204204204
+        },
+        "whale": {
+          "flagged": 0,
+          "n": 99,
+          "rate": 0.0
+        },
+        "tilter": {
+          "flagged": 3,
+          "n": 145,
+          "rate": 0.020689655172413793
+        }
+      },
+      "mixture": {
+        "honest": {
+          "flagged": 10,
+          "n": 1665,
+          "rate": 0.006006006006006006
+        },
+        "whale": {
+          "flagged": 0,
+          "n": 99,
+          "rate": 0.0
+        },
+        "tilter": {
+          "flagged": 2,
+          "n": 145,
+          "rate": 0.013793103448275862
+        }
+      }
+    }
+  }
+}

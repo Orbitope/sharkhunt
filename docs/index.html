@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KG3409EZDQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-KG3409EZDQ');
+</script>
+
+<title>Hunting Sharks: Catching Rating Manipulators by What They Bet</title>
+<meta name="description" content="A player who throws matches to keep their rating low is invisible to any test that looks at wins and losses - provably, at any sample size. What they stake gives them away. A sequential detector that models bets and outcomes together catches them in a median of 14 matches, and makes hiding cost more than cheating pays. Runs live in your browser.">
+<meta property="og:title" content="Hunting Sharks: Catching Rating Manipulators by What They Bet">
+<meta property="og:description" content="Outcome-based rating systems cannot see a player who deliberately loses. Their wagers can. Building the detector, breaking it twice, then learning its hypothesis from the population instead of guessing it.">
+<meta property="og:type" content="article">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111009'/%3E%3Cpath d='M8 40 L32 8 L56 40 Z' fill='none' stroke='%23E8C068' stroke-width='4.4' stroke-linejoin='round'/%3E%3Cpath d='M8 48 Q20 42 32 48 T56 48' fill='none' stroke='%236B7A8D' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --void:#111009; --surface:#1a1812; --raised:#211e17; --border:#2a2820;
+    --amber:#C49A3C; --amber-bright:#E8C068;
+    --steel:#6B7A8D; --steel-bright:#9AAABB;
+    --mauve:#9A7AB0; --sage:#7D9A6A; --terra:#C47A5A; --coral:#FF5E3A;
+    --text-bright:#EDE8DC; --text-primary:#C8C2B4; --text-muted:#6A6358;
+    --font-display:'Rajdhani',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  }
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{background:var(--void);color:var(--text-primary);font-family:var(--font-mono);
+    -webkit-font-smoothing:antialiased;line-height:1.7;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(circle,rgba(154,170,187,.10) 1px,transparent 1px);background-size:48px 48px}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 120% at 50% 30%,rgba(0,0,0,0) 45%,rgba(0,0,0,.6) 100%)}
+  .wrap{position:relative;z-index:1}
+  .progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--amber),var(--amber-bright))}
+
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px}
+  .kicker{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-muted);margin-bottom:22px}
+  .hero h1{font-family:var(--font-display);font-weight:700;font-size:clamp(36px,8vw,84px);line-height:1.02;color:var(--text-bright);max-width:17ch}
+  .hero h1 .accent{color:var(--amber-bright)}
+  .hero .sub{margin-top:24px;max-width:60ch;font-size:14px;color:var(--text-muted);line-height:1.75}
+  .hero .sub b{color:var(--text-primary);font-weight:500}
+  .hero .sub code{background:var(--raised);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--steel-bright)}
+  .scroll-cue{margin-top:46px;font-size:11px;letter-spacing:.2em;color:var(--text-muted);text-transform:uppercase;animation:bob 2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  @media (prefers-reduced-motion:reduce){.scroll-cue{animation:none}}
+
+  .beat{max-width:680px;margin:0 auto;padding:12vh 24px 3vh}
+  .beat .eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);margin-bottom:18px}
+  .beat .eyebrow.win{color:var(--sage)}
+  .beat .eyebrow.bad{color:var(--coral)}
+  .beat h2{font-family:var(--font-display);font-weight:600;font-size:clamp(26px,4.5vw,40px);color:var(--text-bright);line-height:1.12;margin-bottom:20px}
+  .beat h3{font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:.04em;color:var(--text-bright);margin:22px 0 10px}
+  .beat p{font-size:15px;color:var(--text-primary);margin-bottom:16px}
+  .beat p b{color:var(--text-bright);font-weight:500}
+  .beat code{background:var(--raised);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:13px;color:var(--steel-bright)}
+  .beat a{color:var(--amber-bright);text-decoration:none;border-bottom:1px solid rgba(232,192,104,.35);transition:.2s}
+  .beat a:hover{border-bottom-color:var(--amber-bright)}
+  .beat .amber{color:var(--amber-bright)} .beat .sage{color:var(--sage)}
+  .beat .coral{color:var(--coral)} .beat .steel{color:var(--steel-bright)} .beat .dim{color:var(--text-muted)}
+  .beat .mauve{color:var(--mauve)}
+  .rule{width:1px;height:60px;margin:0 auto;background:linear-gradient(transparent,var(--border),transparent)}
+
+  .fig{max-width:940px;margin:34px auto;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#0d0c07}
+  .fig figcaption,.fig .cap{font-size:11px;color:var(--text-muted);padding:11px 16px;border-top:1px solid var(--border);letter-spacing:.03em;line-height:1.6}
+  .fig .cap b{color:var(--text-primary);font-weight:500}
+  .fig .cap .amber{color:var(--amber-bright)} .fig .cap .sage{color:var(--sage)}
+  .fig .cap .coral{color:var(--coral)} .fig .cap .steel{color:var(--steel-bright)}
+  .fig.narrow{max-width:680px}
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+
+  .wdg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;
+    border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);letter-spacing:.04em;flex-wrap:wrap}
+  .wdg-head b{color:var(--text-bright);font-weight:500}
+  .tag{font-weight:500;letter-spacing:.12em;padding:3px 10px;border-radius:3px;font-size:11px;white-space:nowrap}
+  .tag.ok{color:#0d0c07;background:var(--sage)} .tag.no{color:#0d0c07;background:var(--coral)}
+  .tag.warn{color:#0d0c07;background:var(--amber)}
+  .tag.idle{color:var(--text-muted);border:1px solid var(--border)}
+  .wdg-foot{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);
+    display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .btn{font-family:var(--font-display);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    background:transparent;color:var(--text-primary);border:1px solid var(--border);border-radius:4px;padding:7px 14px;cursor:pointer;transition:.2s}
+  .btn:hover{color:var(--text-bright);border-color:var(--amber)}
+  .btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  .btn:disabled{opacity:.35;cursor:default}
+  .btn.on{color:#0d0c07;background:var(--amber);border-color:var(--amber)}
+
+  .toggle-row{display:flex;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .toggle{flex:1 1 auto;padding:12px 6px;font-family:var(--font-display);font-weight:600;font-size:12px;
+    letter-spacing:.08em;text-transform:uppercase;text-align:center;cursor:pointer;background:transparent;
+    color:var(--text-muted);border:none;border-right:1px solid var(--border);
+    border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
+  .toggle:last-child{border-right:none}
+  .toggle.active{color:var(--text-bright);border-bottom-color:var(--amber);background:var(--surface)}
+  .toggle:hover{color:var(--text-primary)}
+  .toggle:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
+
+  .ctl{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;font-size:11px;color:var(--text-muted)}
+  .ctl label{display:flex;align-items:center;gap:8px;letter-spacing:.06em}
+  .ctl input[type=range]{width:130px;accent-color:var(--amber)}
+  .ctl .v{color:var(--amber-bright);font-variant-numeric:tabular-nums;min-width:4ch;display:inline-block}
+  .ctl select{background:var(--raised);color:var(--text-primary);border:1px solid var(--border);
+    border-radius:3px;padding:4px 7px;font-family:var(--font-mono);font-size:11px}
+
+  .stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;padding:4px 12px 12px;font-size:11px;color:var(--text-muted)}
+  .stats b{color:var(--amber-bright);font-weight:500;font-variant-numeric:tabular-nums}
+  .stats .big{color:var(--text-bright);font-size:14px}
+  .stats .sage{color:var(--sage)} .stats .coral{color:var(--coral)}
+
+  svg.chart{display:block;width:100%}
+  .legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:11px;color:var(--text-muted);padding:2px 16px 12px}
+  .legend .k{display:inline-flex;align-items:center;gap:6px;cursor:default}
+  .legend .sw{width:14px;height:3px;border-radius:2px;flex:none}
+  .legend .sw.sq{width:11px;height:11px;border-radius:2px}
+
+  /* the six-cell evidence grid */
+  .cells{display:block;width:100%;max-width:620px;margin:14px auto 4px}
+
+  /* connect four board */
+  .c4{display:block;width:100%;max-width:330px;margin:14px auto 6px}
+  .c4 .slot{fill:var(--void);stroke:var(--border);stroke-width:1}
+  .c4 .p0{fill:var(--coral)} .c4 .p1{fill:var(--steel-bright)}
+  .c4 .last{stroke:var(--amber-bright);stroke-width:2.4}
+
+  /* simple data table */
+  .tbl{width:100%;border-collapse:collapse;font-size:11.5px;color:var(--text-primary)}
+  .tblwrap{overflow-x:auto;padding:4px 0 2px}
+  .tbl th{font-family:var(--font-display);font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    font-size:10.5px;color:var(--text-muted);text-align:right;padding:9px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+  .tbl th:first-child,.tbl td:first-child{text-align:left}
+  .tbl td{padding:7px 14px;border-bottom:1px solid rgba(42,40,32,.6);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl td.good{color:var(--sage)} .tbl td.bad{color:var(--coral)} .tbl td.hi{color:var(--amber-bright)}
+  .tbl td.nm{color:var(--text-bright)}
+  .tbl tr.mark td{background:rgba(196,154,60,.06)}
+
+  pre.code{margin:0;padding:14px 16px 16px;font-family:var(--font-mono);font-size:11.5px;line-height:1.7;
+    color:var(--text-primary);overflow-x:auto;white-space:pre}
+  pre.code .k{color:var(--mauve)} pre.code .f{color:var(--steel-bright)}
+  pre.code .s{color:var(--sage)}
+  pre.code .c{color:var(--text-muted)} pre.code .n{color:var(--amber-bright)}
+  pre.code .hl{background:rgba(196,154,60,.13);display:inline-block;width:100%}
+
+  .caveats{max-width:680px;margin:0 auto;padding:4vh 24px 2vh;font-size:12px;color:var(--text-muted);line-height:1.75}
+  .caveats h4{font-family:var(--font-display);font-weight:600;font-size:15px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--text-primary);margin-bottom:16px}
+  .caveats .c{display:flex;gap:10px;margin-bottom:12px}
+  .caveats .c::before{content:"▸";color:var(--amber);flex:none}
+  .caveats b{color:var(--text-primary);font-weight:500}
+
+  .outro{max-width:680px;margin:0 auto;padding:12vh 24px 10vh;text-align:center}
+  .outro h2{font-family:var(--font-display);font-weight:600;font-size:clamp(24px,4vw,38px);color:var(--text-bright);margin-bottom:18px}
+  .outro p{font-size:14px;color:var(--text-muted);margin-bottom:22px}
+  .links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .links a{display:inline-flex;align-items:center;padding:10px 20px;background:var(--surface);
+    border:1px solid var(--border);border-radius:3px;color:var(--text-primary);text-decoration:none;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
+  .links a:hover{border-color:var(--amber);color:var(--amber-bright);background:rgba(196,154,60,.06)}
+  .foot{margin-top:34px;font-size:11px;color:var(--text-muted);letter-spacing:.1em}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">Shark hunt · wager-aware sequential detection</div>
+  <h1>A shark can fake losing. They can't fake <span class="accent">not caring about the money</span>.</h1>
+  <p class="sub">A player who is far better than their rating suggests, in a game where matches are played for money, has an obvious move: lose on purpose often enough that the rating never catches up, and keep farming beginners. Every rating system in wide use scores you on wins and losses, and there is a rate of losing on purpose - a <b>tank rate</b> - that makes that record <b>exactly</b> what an honest player at that rating would produce - not approximately, not eventually, exactly. No test looking at results alone can ever separate the two. But they are not there for the rating. They are there for the money, and every match they have to decide how much to stake before the result is known - and unlike everyone else at the table, they have already decided whether they are trying. This page builds a detector out of that, breaks it twice on purpose, and then stops guessing what a cheater looks like and learns it from the population. No statistics beyond what the page explains as it goes; the simulations run live in your browser, and the two figures that needed an offline model fit say so.</p>
+  <div class="scroll-cue">scroll</div>
+</header>
+
+<!-- ============ 1. THE ASYMMETRY ============ -->
+<section class="beat">
+  <div class="eyebrow">The asymmetry</div>
+  <h2>A smurf ruins your evening. A shark takes your rent.</h2>
+  <p>A smurf is an experienced player on a fresh account, stomping beginners for fun. It's annoying, matchmaking eventually sorts it out, and the cost is a bad hour.</p>
+  <p>Change one thing - make the matches wagered, for real money - and the same behaviour becomes a business. Now the incentive is not to enjoy easy games but to <b>stay</b> in easy games, indefinitely, because the low bracket is where the profitable opponents are. That means actively managing your rating downward - losing on purpose, <b>tanking</b>, at whatever rate keeps the number where the money is. The industry word for this player is a shark, and unlike a smurf they have every reason to be patient and unremarkable.</p>
+  <p>To see why they get away with it, you need ninety seconds on how the scoreboard works.</p>
+</section>
+
+<section class="beat">
+  <div class="eyebrow">The scoreboard</div>
+  <h2>Elo, in ninety seconds.</h2>
+  <p>Nearly every competitive rating in use descends from <b>Elo</b> - invented for chess by Arpad Elo in 1960, and quietly running ranked ladders, esports and even AI leaderboards ever since. It does exactly two things.</p>
+  <p><b>Before a match</b>, it converts the gap between two ratings into a predicted win probability: <code>E = 1 / (1 + 10^(-gap/400))</code>. Equal ratings predict 50%. A 400-point favourite is predicted to win 91% of the time. The curve flattens toward the extremes but never quite reaches 0% or 100% - no rating gap makes an upset impossible.</p>
+  <p><b>After the match</b>, it pays out surprise. Each rating moves by <code>K · (result − E)</code>: a heavy favourite who wins collects almost nothing, because the result was already priced in, while an underdog who wins collects a lot. <code>K</code> is just the volatility dial - how hard one result yanks the number.</p>
+  <p>The property everyone trusts is that this is <b>self-correcting</b>. Rated too low, you keep beating the prediction and climb; rated too high, you keep disappointing it and fall. But notice what the correction audits: <i>how often you win</i>, against how often you should. Nothing else. So it self-corrects only against players who are trying to win - a player who controls how often they win controls their rating, and the correction machinery becomes their parking brake. <span class="dim">(I've written a longer <a href="https://mwburke.github.io/data/science/2026/05/21/elo-interactive.html">interactive guide to Elo</a> if you want to play with the curve itself.)</span></p>
+  <p><span class="dim">Drag the tank rate - the fraction of matches deliberately thrown. Watch the rating go flat.</span></p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>rating over <b>400</b> wagered matches</span><span class="tag idle" id="pin_tag">drifting</span></div>
+  <div class="ctl">
+    <label>hidden skill <input type="range" id="pin_delta" min="0" max="800" step="50" value="400"><span class="v" id="pin_delta_v">+400</span></label>
+    <label>tank rate <input type="range" id="pin_tau" min="0" max="80" step="1" value="0"><span class="v" id="pin_tau_v">0%</span></label>
+    <button class="btn" id="pin_solve">Solve for invisible</button>
+  </div>
+  <svg class="chart" id="pin_svg" viewBox="0 0 620 250" role="img" aria-label="rating trajectory"></svg>
+  <div class="stats">
+    <span>observed win rate <b id="pin_wr">—</b></span>
+    <span>rating drift <b class="big" id="pin_drift">—</b></span>
+    <span>profit per match <b id="pin_profit">—</b></span>
+  </div>
+  <div class="cap" id="pin_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>At a tank rate of zero the rating runs away and the shark loses their farm within fifty matches. Push the slider and the climb flattens. Press <b>Solve for invisible</b> and it stops dead.</p>
+  <p>That setting isn't found by search. Write <code>e</code> for the win probability the shown rating predicts and <code>e_delta</code> for the one the player's real strength predicts. Throwing a fraction <code>tau</code> of matches gives an observed win rate of <code>(1 - tau) · e_delta + tau · 0.02</code>. Set that equal to <code>e</code> - the record an honest player would produce - and solve for <code>tau</code>. The answer, which we'll call <b>tau*</b>, the <b>pinning rate</b>, is one line:</p>
+</section>
+
+<figure class="fig narrow reveal">
+  <pre class="code"><span class="c"># sharkhunt/elo.py</span>
+<span class="c"># expected:      the win probability Elo assigns from the two shown ratings</span>
+<span class="c"># e_delta:       that probability re-priced as if the player were delta stronger</span>
+<span class="c"># tank_win_prob: even a thrown match gets won 2% of the time -</span>
+<span class="c">#                a loss can be made very likely, never guaranteed</span>
+<span class="k">def</span> <span class="f">pinning_tank_rate</span>(expected, delta, tank_win_prob=<span class="n">0.02</span>):
+    e_delta = <span class="f">shift_expectation</span>(expected, delta)
+    <span class="k">return</span> (e_delta - expected) / (e_delta - tank_win_prob)
+
+<span class="c"># +400 Elo of hidden skill, even matchup:  tau* = 0.460</span>
+<span class="c"># At tau* the observed win rate is 0.500 - the honest number, exactly.</span></pre>
+  <div class="cap">At <b>tau*</b> the shark's wins and losses follow the <b>identical</b> distribution an honest player's would. Not similar. Identical.</div>
+</figure>
+
+<section class="beat">
+  <p>This is worth being precise about, because it is stronger than "the test is slow". Any test built on results watches them arrive one at a time and accumulates evidence match by match. At tau* the evidence <b>per match is zero</b>, so a million matches accumulate a million zeros. There is no sample size at which the outcome record separates these two players, because there is nothing in it to separate.</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- ============ 2. SEQUENTIAL TESTING ============ -->
+<section class="beat">
+  <div class="eyebrow">The standard tool</div>
+  <h2>The right test, pointed at the wrong evidence.</h2>
+  <p>The textbook tool is a <b>sequential test</b>: rather than gathering a fixed pile of data and analysing it once, you score each match as it arrives and stop the moment the evidence is decisive, whichever way it points. The classic version is Wald's sequential probability ratio test, from 1945 - the same machinery computer-chess engine testing uses to decide whether a new engine is genuinely stronger, rather than just ahead so far.</p>
+  <p>It needs the accusation and the innocence stated precisely enough to price any result. <span class="sage"><b>H0</b>, innocent: their skill is exactly what their rating says.</span> <span class="coral"><b>H1</b>, guilty: they are 400 Elo stronger and throwing 40% of their matches to hide it.</span> Because both are fully specified, each can say precisely how likely any given result was.</p>
+  <p>That makes the scoring mechanical. After every match, ask both hypotheses how probable that result was, and add <code>log( P(result | H1) / P(result | H0) )</code> - the <b>log-likelihood ratio</b> - to a running total. Concretely, take an even matchup: H0 prices a win at 50%, while H1 - stronger, but throwing 40% of the time - prices it at 55%. A win contributes <code>log(0.55 / 0.50) = +0.10</code>, a nudge toward guilt; a loss contributes <code>log(0.45 / 0.50) = −0.11</code>, a nudge toward innocence. Every match nudges the total one way or the other, and the total is the case file.</p>
+  <p>The total wanders like a random walk, and two horizontal lines bound it: cross the top and you accuse; cross the bottom and you clear the player and stop watching. Wald's result is that you can place those lines directly from the two mistakes you're willing to tolerate - <code>α</code>, the chance of ever accusing an honest player, and <code>β</code>, the chance of clearing a real shark. Accepting 1% of each puts the lines at <b>±4.60</b> <span class="dim">(the general recipe is <code>log((1-β)/α)</code> and <code>log(β/(1-α))</code>)</span>.</p>
+  <p><span class="dim">Press Play. Twenty honest players, one shark who doesn't bother hiding, one who does.</span></p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>cumulative log-likelihood ratio · <b>outcomes only</b></span><span class="tag idle" id="sprt_tag">match 0</span></div>
+  <svg class="chart" id="sprt_svg" viewBox="0 0 620 260" role="img" aria-label="SPRT trajectories"></svg>
+  <div class="legend">
+    <span class="k"><i class="sw" style="background:var(--sage)"></i>20 honest players</span>
+    <span class="k"><i class="sw" style="background:var(--coral)"></i>shark, no concealment</span>
+    <span class="k"><i class="sw" style="background:var(--amber-bright)"></i>shark tanking at tau*</span>
+  </div>
+  <div class="wdg-foot">
+    <span id="sprt_note">Same detector, same thresholds, three kinds of player.</span>
+    <span style="display:flex;gap:8px">
+      <button class="btn" id="sprt_play">Play</button>
+      <button class="btn" id="sprt_reset">Reset</button>
+    </span>
+  </div>
+  <div class="cap" id="sprt_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>The unconcealed shark gets caught every time, in a median of <b>56</b> matches. That is the test working. The honest players wander and mostly settle out the bottom, correctly cleared.</p>
+  <p>Now look at the <span class="amber">amber</span> line. It doesn't climb, and it doesn't hover either - it drifts <b>down</b>, the same direction as the honest players, and eventually exits through the "this player is fine" boundary. Over 2,000 simulated players, an outcome-only test caught <b class="coral">0.0%</b> of sharks tanking at tau*, and actively exonerated most of them.</p>
+  <p>That's the worst possible failure. Not an alarm that doesn't ring - an all-clear.</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- ============ 3. THE WAGERS ============ -->
+<section class="beat">
+  <div class="eyebrow">The thing they can't hide</div>
+  <h2>They are not here for the rating.</h2>
+  <p>Everything above only looks at who won. But in a wagered game there is a second number attached to every match, and the shark has to choose it <b>before</b> the result.</p>
+
+  <h3>What a shark controls, and what they don't</h3>
+  <p>Not the result. This matters, and it is easy to skate past: <b>being better is not the same as winning</b>. Hiding 400 Elo means winning about <b>91%</b> of the matches you genuinely try to win - not all of them. And a match you are actively throwing still gets won <b>2%</b> of the time, because your opponent can blunder badly enough that you win despite yourself. Over a hundred matches, our shark takes about <b class="coral">five losses they never intended</b> and backs into <b class="coral">one win they didn't want</b>.</p>
+  <p>What they do control is <b>intent</b> - try, or throw - fixed before the bet is placed. So the stake never reveals the outcome. It reveals the intent, and the intent only <i>leans</i> on the outcome.</p>
+  <p>Stated properly, then, the asymmetry is this. An honest player's stake cannot correlate with their result at all, because nothing they know beforehand predicts it. A shark's stake correlates with their result <b>imperfectly but relentlessly</b>. That gap is the entire signal, and its imperfection is why no single match ever proves anything - a big bet that loses is genuinely something a shark does, roughly one time in eleven. It is why this has to be a test that accumulates, and why it takes a couple of dozen matches rather than one.</p>
+  <p>Before using it, the ground rules for the money on this page - every profit number later depends on them. A bet is one of three sizes, tiers <b>min</b>, <b>mid</b> and <b>max</b>, at 10%, 40% and 100% of the table cap. Both players post the same stake, the winner takes the pot, and the house keeps a <b>5% cut</b> of it. The cut means a fair match is slightly worse than break-even: an honest player, matched fairly, loses money slowly. That slow loss is the baseline any cheat has to beat before the cheating pays for itself.</p>
+  <p>Now the obvious way to use the stakes: keep the same test, and scale each match's evidence by the size of the bet. Big bet, big evidence. Tiny bet, ignore it. Call it the wager-weighted score.</p>
+</section>
+
+<figure class="fig narrow reveal">
+  <pre class="code"><span class="c"># sharkhunt/detectors.py - the intuitive first attempt</span>
+<span class="k">class</span> <span class="f">WeightedLLR</span>(OutcomeSPRT):
+    <span class="k">def</span> <span class="f">increment</span>(self, obs):
+        <span class="k">return</span> <span class="f">super</span>().<span class="f">increment</span>(obs) * STAKES[obs.tier] / <span class="f">max</span>(STAKES)</pre>
+  <div class="cap"><code>obs.tier</code> is which of the three bet sizes the player posted; the multiplier rescales that match's outcome evidence by the stake.</div>
+</figure>
+
+<section class="beat">
+  <p>It works, in the sense that it fires. The shark who was invisible a moment ago now gets caught about <b>55%</b> of the time. That feels like progress, and it is where a lot of real systems stop.</p>
+  <p>It shouldn't be. There are two things wrong with it, and one of them is not a matter of taste.</p>
+  <h3>It is not a likelihood ratio any more</h3>
+  <p>Multiply the terms of a log-likelihood ratio by an arbitrary weight and the result is no longer the log of any probability ratio. Wald's thresholds were derived for a quantity this isn't, so <b>±4.60 no longer buys a 1% error rate</b> - it buys an unknown rate that depends on how the player bets.</p>
+  <p>That sounds like pedantry until you measure it. Below, "resolved" means the test reached a verdict either way within 400 matches, on players who are all honest. One of them is a <b>whale</b> - the casino word for a player who always bets the table maximum, honestly, because money simply isn't their constraint.</p>
+</section>
+
+<figure class="fig narrow reveal">
+  <div class="wdg-head"><span>honest players resolved within 400 matches</span><span class="tag no">same thresholds</span></div>
+  <div class="tblwrap"><table class="tbl" id="calib_tbl"></table></div>
+  <div class="cap">A cautious bettor's case essentially never closes; a whale's almost always does. Identical honest behaviour, wildly different treatment, because the <b>size of the steps</b> depends on stake while the thresholds don't move. The outcome-only test - which is a real likelihood ratio - treats all four the same, as a properly calibrated test should.</div>
+</figure>
+
+<section class="beat">
+  <h3>It throws away the most incriminating thing in the record</h3>
+  <p>A minimum-bet loss is exactly what a shark throwing a match cheaply looks like. The wager-weighted score multiplies that match's evidence by <code>0.1</code>, then by an outcome term that is itself near zero at tau*. It scores the single most suspicious event in the dataset as <b>nothing at all</b>.</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- ============ 4. THE JOINT MODEL ============ -->
+<section class="beat">
+  <div class="eyebrow">The fix</div>
+  <h2>Don't weight the evidence. Model the bet.</h2>
+  <p>The weighting was a patch bolted onto the old test. The real fix is to change what one observation <i>is</i>. Until now the detector saw one thing per match - won or lost - and the bet came in from the side as a multiplier. Instead, make the observation the <b>pair</b>: which of the three tiers they bet, and whether they won. Three tiers times two results gives six possible observations, and each hypothesis now has to put a probability on all six. That is what a <b>joint distribution</b> is - "joint" because it prices the bet and the outcome <i>together</i>, so it can express a relationship between them, not just their separate frequencies.</p>
+  <p>And the relationship is exactly where the two hypotheses disagree. Under <span class="sage">H0</span> the stake can't know something the player doesn't, so bet and outcome are <b>independent</b>: the probability of any pair is just how often they post that tier, times how often they win. Under <span class="coral">H1</span> the pair shares a hidden cause - the shark's private decision, made before betting, about whether this is a match they intend to win. That one decision pushes the bet and the result in the same direction, which is the correlation an honest player has no way to produce.</p>
+  <p>Writing it down takes three ingredients, each just a short list of probabilities: <code>pi</code>, how often this player posts each tier when nothing is going on; <code>phi_play</code>, how a shark bets on matches they mean to win; <code>phi_tank</code>, how they bet on matches they mean to throw. For now every one of these is <i>assumed</i> - plausible values I wrote down by hand. Keep that discomfort warm; it becomes the final act.</p>
+</section>
+
+<figure class="fig narrow reveal">
+  <pre class="code"><span class="c"># Bernoulli(y ; p) just means: y is a win with probability p, a loss otherwise</span>
+
+<span class="c"># H0: skill equals rating, so the bet says nothing about the result</span>
+P(t, y | H0) = pi[t] * Bernoulli(y ; e)
+
+<span class="c"># H1: a private choice drives both the bet and the result</span>
+P(t, y | H1) = tau     * phi_tank[t] * Bernoulli(y ; <span class="n">0.02</span>)
+             + (<span class="n">1</span>-tau) * phi_play[t] * Bernoulli(y ; e_delta)
+
+<span class="c"># Both sum to 1 over the six cells, so the ratio is a real</span>
+<span class="c"># likelihood ratio and the thresholds mean what they say again.</span></pre>
+  <div class="cap">The correlation is the fingerprint. Not the size of the bets - the fact that their size tracks the result.</div>
+</figure>
+
+<section class="beat">
+  <p>The consequence is worth looking at directly. Below is the evidence each of the six observable events contributes, under this model and under the weighted score. The values are in the same units the running total accumulates - and the accuse line sits at 4.60, so an event worth +0.67 carries about a seventh of a conviction on its own.</p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>evidence per match, by what you bet and what happened</span><span class="tag idle" id="cells_tag">even matchup</span></div>
+  <div class="ctl">
+    <label>matchup <input type="range" id="cells_e" min="20" max="80" step="1" value="50"><span class="v" id="cells_e_v">50%</span></label>
+    <label>hidden skill <input type="range" id="cells_d" min="100" max="800" step="50" value="400"><span class="v" id="cells_d_v">+400</span></label>
+  </div>
+  <svg class="cells" id="cells_svg" viewBox="0 0 620 210" role="img" aria-label="evidence per observation type"></svg>
+  <div class="legend">
+    <span class="k"><i class="sw sq" style="background:var(--coral)"></i>incriminating</span>
+    <span class="k"><i class="sw sq" style="background:var(--sage)"></i>exonerating</span>
+    <span class="k"><i class="sw sq" style="background:var(--raised);border:1px solid var(--border)"></i>weighted score's view</span>
+  </div>
+  <div class="cap" id="cells_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>In an even matchup against a shark hiding 400 Elo, a <b class="coral">minimum-bet loss is worth +0.67</b> - the second most incriminating thing a player can do. The weighted score values that same event at <b>0.00</b>.</p>
+  <p>And a minimum-bet <i>win</i> is worth <b class="sage">−1.72</b>, strongly exonerating, because sharks don't win the matches they staked nothing on. There is no way to express that with a multiplier. A multiplier can shrink evidence toward zero; it can't flip its sign.</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- ============ 5. BREAKING IT AGAIN ============ -->
+<section class="beat">
+  <div class="eyebrow bad">Where it goes wrong</div>
+  <h2>Now it convicts every whale in the building.</h2>
+  <p>The model above needs <code>pi</code>, the player's distribution over bet tiers. The easy thing is to use the field's average. Do that and the detector catches 100% of sharks in a median of 13 matches, which looks like a triumph until you check who else it caught.</p>
+  <p>A whale - honest, just rich, always bets the table maximum - never makes the small bets the field constantly makes. Match after match they look very slightly more like H1 than H0. A very slight bias, accumulated sequentially, convicts <b class="coral">100%</b> of them.</p>
+  <p>The fix is to stop assuming everyone bets alike and learn each player's <code>pi</code> from their own bets. Done naively, that breaks at both ends: a brand-new player has no history to learn from, and a patient shark can manufacture a convenient one. So the estimate is stabilised the standard Bayesian way - start every player with a handful of <b>phantom matches</b> whose bets follow the population average, then let their real matches gradually outvote the phantoms. The formal name for this is a Dirichlet prior; the arithmetic is one line:</p>
+</section>
+
+<figure class="fig narrow reveal">
+  <pre class="code"><span class="c"># the bet profile the detector holds for one player, n matches into their career</span>
+P(next bet = tier t) = (count[t] + strength · pop[t]) / (n + strength)
+
+<span class="c"># count[t]:  how often THIS player has posted tier t so far</span>
+<span class="c"># pop[t]:    how often the whole field posts tier t</span>
+<span class="c"># strength:  how many phantom matches the population average is worth</span></pre>
+  <div class="cap">Each match is judged against the profile built from the matches <b>before</b> it, so no bet is ever allowed to explain itself.</div>
+</figure>
+
+<section class="beat">
+  <p><span class="dim">Switch between players. Every detector, same match stream, side by side. The <b>tilter</b> is the interesting honest case - a player who chases losses, betting bigger after a defeat. Their stakes genuinely do correlate with results, just with the <i>previous</i> one rather than the coming one: real correlation, innocent direction.</span></p>
+</section>
+
+<figure class="fig reveal">
+  <div class="toggle-row" id="duel_tabs"></div>
+  <div class="wdg-head"><span id="duel_desc">—</span><span class="tag idle" id="duel_tag">—</span></div>
+  <svg class="chart" id="duel_svg" viewBox="0 0 620 280" role="img" aria-label="detector comparison"></svg>
+  <div class="legend" id="duel_legend"></div>
+  <div class="wdg-foot">
+    <span id="duel_note">400 matches, simulated in your browser.</span>
+    <span style="display:flex;gap:8px">
+      <button class="btn" id="duel_reseed">New player</button>
+    </span>
+  </div>
+  <div class="cap" id="duel_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>The <span class="steel">population-profile</span> detector and the <span class="amber">per-player</span> one behave identically on the shark. On the whale they could not be more different: one convicts, the other clears them decisively.</p>
+  <p>The number of phantom matches - the prior's <b>strength</b> - is now the thing to get right, and both extremes fail in opposite directions.</p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>Dirichlet prior strength · shark detection against false accusations</span><span class="tag idle" id="prior_tag">—</span></div>
+  <svg class="chart" id="prior_svg" viewBox="0 0 620 250" role="img" aria-label="prior strength sweep"></svg>
+  <div class="legend">
+    <span class="k"><i class="sw" style="background:var(--amber-bright)"></i>sharks caught</span>
+    <span class="k"><i class="sw" style="background:var(--coral)"></i>whales falsely accused</span>
+    <span class="k"><i class="sw" style="background:var(--steel-bright)"></i>ordinary honest players falsely accused</span>
+  </div>
+  <div class="cap" id="prior_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>Trust each player's own history too much and their few early matches become their whole standard, so ordinary honest players get accused on noise - <b class="coral">12.5%</b> of them at the far left. Trust the population too much and you are back to judging the whale by other people's habits, up to <b class="coral">53%</b> at the far right. Everything from about <b>4</b> to <b>16</b> holds sharks at 100% with neither failure mode.</p>
+  <p>That is a comfortable window, and it is also a number somebody chose by looking at a chart. Hold that thought.</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- ============ 6. ONE ASSUMED SHARK ============ -->
+<section class="beat">
+  <div class="eyebrow bad">Where it goes wrong again</div>
+  <h2>A test tuned for one kind of cheat is blind to the others.</h2>
+  <p>Everything so far fixes H1 at one specific shark: 400 Elo hidden, throwing 40% of matches. Point that detector at somebody who hides 400 Elo and throws <i>none</i> - the crude version from the very first widget - and it catches only <b>86%</b> of them, because their bets carry no trace of the tanking the hypothesis is looking for.</p>
+  <p>The outcome-only test catches that player every time. So the two detectors have complementary blind spots, which is an uncomfortable place to leave a system whose whole job is not having blind spots.</p>
+  <p>Stop assuming one shark. Make H1 a mixture over a grid of them, and average:</p>
+</section>
+
+<figure class="fig narrow reveal">
+  <pre class="code"><span class="c"># "Some kind of shark, weights w over the kinds" - average the fifteen</span>
+<span class="c"># six-cell tables. The weights sum to 1 and each table sums to 1, so the</span>
+<span class="c"># average still sums to 1: the ratio remains a genuine likelihood ratio.</span>
+P(t, y | H1) = sum_k  w[k] * P(t, y | H1 ; delta[k], tau[k])</pre>
+  <div class="cap">Grid: hidden skill of <b>200 / 400 / 700</b> crossed with tank rates <b>0 / .15 / .30 / .45 / .60</b>. Fifteen kinds of shark instead of one.</div>
+</figure>
+
+<section class="beat">
+  <p>That closes the hole. Both shark styles are now caught at 100%, false positives are unchanged, and on the blatant shark the mixture is not merely as good as the outcome test but <b>four times faster</b> - a median of <b>13</b> matches against <b>56</b> - because it gets to use the bets as well. It costs a little sharpness on the awkward middle cases, which the table below reports rather than hides.</p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>2,000 players · 300 matches each · 5% sharks</span><span class="tag ok">measured, not assumed</span></div>
+  <div class="tblwrap"><table class="tbl" id="field_tbl"></table></div>
+  <div class="cap">The first row is the whole problem: a test that looks only at results catches <b>none</b> of the sharks who bother to hide. The wager-aware rows catch all of them, in a median of a couple of dozen matches, while accusing about half a percent of honest players.</div>
+</figure>
+
+<div class="rule"></div>
+
+<!-- ============ 7. LEARN THE HYPOTHESIS ============ -->
+<section class="beat">
+  <div class="eyebrow">Stop guessing</div>
+  <h2>Every number in that model was made up by me.</h2>
+  <p>The tank rates. The hidden-skill grid. What a shark's bets look like when they mean to win. The prior strength I picked off a chart two sections ago. All chosen by hand, all defensible, none of them <i>measured</i>.</p>
+  <p>They don't have to be, because all of them can be <i>learned</i> from the population's match records - with no labels, since nobody knows who the cheaters are. This is the part the results hang on, so it is worth slowing down for. The trick is to write a model that tells the story of how the whole season's data came to be, with every number I was choosing by hand promoted to an unknown:</p>
+  <p>Each player is secretly one of two kinds, decided by a weighted coin flip. The weight - the fraction of the population that is cheating, <code>prevalence</code> - is unknown. An <b>honest</b> player gets personal betting habits <code>pi</code> drawn from around a population average (unknown), held together by a phantom-match strength (unknown - the very dial I was setting by eye two sections ago), and their matches follow the honest half of the six-cell model. A <b>shark</b> instead draws a strategy - how much hidden skill, what tank rate - from the fifteen-cell grid with unknown weights, plus the betting habits <code>phi_play</code> and <code>phi_tank</code> (both unknown), and their matches follow the shark half.</p>
+  <p>Nothing per-player survives into the fitting. The secret coin and the personal habits would be thousands of parameters, but both can be summed away exactly. The coin has only two outcomes, so each player contributes one quantity: <i>the probability I am honest and produced this record, plus the probability I am a shark and produced it</i>. And averaging over every possible betting habit consistent with a player's bet counts has a closed form. What remains is roughly <b>twenty numbers describing the whole population</b>.</p>
+  <p>Those twenty are fitted by <b>MCMC</b> - a guided random walk through parameter settings that lingers wherever the data is well explained, so time spent at a setting is proportional to how plausible it is (the specific walker is NUTS, PyMC's default). What comes back is therefore not one best answer but a <b>posterior</b>: a cloud of parameter settings, each weighted by how consistent it is with everything observed. The width of the cloud is the honesty - it says how much the data actually pins down.</p>
+</section>
+
+<figure class="fig narrow reveal">
+  <pre class="code"><span class="c"># sharkhunt/hierarchical.py - the story above, as PyMC sees it</span>
+z[p]   ~ <span class="f">Bernoulli</span>(prevalence)              <span class="c"># the secret coin: shark or not</span>
+pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="c"># honest habits, near the average</span>
+
+<span class="c"># neither z nor pi is ever sampled - each is summed out exactly,</span>
+<span class="c"># leaving one term per player that covers both possible identities:</span>
+<span class="f">pm.Potential</span>(<span class="s">"population"</span>, <span class="f">logsumexp</span>(
+    [<span class="f">log1p</span>(-prevalence) + ll_honest,   <span class="c"># "I'm honest and produced this record"</span>
+     <span class="f">log</span>(prevalence)    + ll_shark],   <span class="c"># "I'm a shark and produced this record"</span>
+    axis=<span class="n">1</span>).<span class="f">sum</span>())</pre>
+  <div class="cap">Fitting is offline and occasional. <b>Serving stays closed-form</b> - each posterior draw becomes one mixture component, and scoring a live player is still a running sum you can do in a browser.</div>
+</figure>
+
+<section class="beat">
+  <p>Nobody tells this model what a shark looks like. No labels, no confirmed cases, no examples - its only foothold is structural: one subpopulation's bets are independent of their results, and another's are not. From that alone it has to discover, in an undifferentiated pile of match records, that the second group stakes heavily on the games it means to win and minimally on the ones it means to throw.</p>
+  <p>The bars below are <b>posterior means</b> - the centre of the fitted cloud - drawn over the true values the simulation was actually run with. Being able to check against the answer key is the one luxury of synthetic data.</p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>recovered shark betting signature vs the truth used to generate the data</span><span class="tag idle" id="fit_tag">—</span></div>
+  <svg class="chart" id="fit_svg" viewBox="0 0 620 240" role="img" aria-label="posterior recovery"></svg>
+  <div class="legend">
+    <span class="k"><i class="sw sq" style="background:var(--amber-bright)"></i>posterior mean</span>
+    <span class="k"><i class="sw sq" style="background:var(--raised);border:1px solid var(--steel)"></i>ground truth</span>
+  </div>
+  <div class="cap" id="fit_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>The prior strength is the one to check against yourself. I picked <b>4 to 16</b> off a chart a few sections ago; the posterior puts it at <b class="amber">3.1</b>, just outside the window I'd talked myself into. Not a dramatic miss, but it is the kind of thing that stays wrong forever when the number is a constant in a config file rather than a parameter with data behind it.</p>
+
+  <h3>Which is also the only way a new game gets this at all</h3>
+  <p>A new title has fifty players and three weeks of history. Fit the model there from scratch and something worse than imprecision happens.</p>
+  <p>An unlabelled mixture doesn't know which of its two components is supposed to be the cheaters. Nothing in the likelihood says "the shark group is the guilty one" - the maths is perfectly happy to decide that the <i>cautious</i> players are the anomalous subpopulation and score everyone accordingly. With a large, rich dataset the honest explanation wins on sheer weight of evidence. With a small one, it often doesn't.</p>
+  <p>Below, the new game has a deliberately different crowd - far more cautious, almost no whales - subtler sharks who hide less skill and let their bets track their intent only loosely, and just <b>40</b> matches per player. The score is <b>AUC</b>: draw one shark and one honest player at random, and ask how often the model ranks the shark as the more suspicious of the two. 1.0 is a perfect ranking, 0.5 is a coin flip - and below 0.5 the ranking is actively backwards. The prior carried over from the established title is doing something more fundamental than adding data.</p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>new title · separating sharks from honest players, by how much local data you have</span><span class="tag idle" id="tr_tag">—</span></div>
+  <svg class="chart" id="tr_svg" viewBox="0 0 620 250" role="img" aria-label="transfer learning curve"></svg>
+  <div class="legend">
+    <span class="k"><i class="sw" style="background:var(--amber-bright)"></i>prior carried from the established title</span>
+    <span class="k"><i class="sw" style="background:var(--steel-bright)"></i>fitted from scratch</span>
+  </div>
+  <div class="cap" id="tr_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>The cold-start line doesn't climb, it thrashes. At two of the four sizes it lands <b>below a coin flip</b> - it found the mirror-image answer and ranked the cheaters as the safest players on the platform. More players don't fix it, because the problem isn't a shortage of evidence; it's that two very different explanations fit the same data about equally well and nothing tells the sampler which one we meant.</p>
+  <p>The transferred prior settles that. It is not extra data, it is the statement <b>this is what a cheat looks like</b>, carried over from a game where we had enough evidence to learn it. The local data then adjusts the details.</p>
+  <p><span class="dim">Transfer isn't the only way to break that symmetry - an ordering constraint on the components would do it, and so would a handful of confirmed cases to anchor the labels. It is the one that doesn't require you to already have caught somebody.</span></p>
+</section>
+
+<div class="rule"></div>
+
+<!-- ============ 8. THE TAX ============ -->
+<section class="beat">
+  <div class="eyebrow win">The part that actually matters</div>
+  <h2>You don't have to catch them. You have to make hiding cost more than cheating pays.</h2>
+  <p>A shark reading this far knows the counter. The detector keys on the correlation between stake and outcome, so break the correlation: bet the same way regardless of intent. The tell disappears and detection falls to the false-positive floor.</p>
+  <p>It also means posting full stake on the matches they are about to throw on purpose. And tanking is not optional - it is the whole mechanism keeping them in the soft bracket. At the pinning rate they must throw <b>46%</b> of their matches. Do that at full stake and the arithmetic stops working.</p>
+</section>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>shark profit against detection, as bets decorrelate from intent</span><span class="tag idle" id="tax_tag">—</span></div>
+  <svg class="chart" id="tax_svg" viewBox="0 0 620 260" role="img" aria-label="profit versus detection"></svg>
+  <div class="legend">
+    <span class="k"><i class="sw" style="background:var(--sage)"></i>profit per match</span>
+    <span class="k"><i class="sw" style="background:var(--coral)"></i>probability of being caught</span>
+  </div>
+  <div class="cap" id="tax_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>Fully correlated, the shark clears <b class="sage">+0.223</b> per match and is caught every time. Fully decorrelated they are invisible - and make <b class="coral">−0.017</b>, against the <b>−0.022</b> an honest player pays to the house cut. They have spent a great deal of effort to earn half a percent of a stake more than someone who isn't cheating at all.</p>
+
+  <h3>The other dial is randomness, and it prices the same way</h3>
+  <p>Bet discipline isn't their only lever. They could instead hide <b>less skill</b> - sit 100 Elo above their rating rather than 400 - and let chance do the concealing for them. It genuinely works: at 100 Elo of hidden skill they win only 64% of the matches they try to win, so a big bet that loses stops being surprising, and the evidence per match gets much weaker.</p>
+
+<figure class="fig reveal">
+  <div class="wdg-head"><span>hiding less skill: how long you last, and what you earn while lasting</span><span class="tag idle" id="skill_tag">—</span></div>
+  <svg class="chart" id="skill_svg" viewBox="0 0 620 250" role="img" aria-label="detection and profit versus hidden skill"></svg>
+  <div class="legend">
+    <span class="k"><i class="sw" style="background:var(--sage)"></i>profit per match</span>
+    <span class="k"><i class="sw" style="background:var(--amber-bright)"></i>matches survived before detection</span>
+  </div>
+  <div class="cap" id="skill_cap"></div>
+</figure>
+
+<section class="beat">
+  <p>Hiding less buys time, not immunity. It stretches survival by about <b>two and a half times</b> - and costs roughly <b>two thirds</b> of the edge to do it. Below about 200 Elo of concealed skill the arithmetic has already stopped being worth the trouble, and that is before counting the effort of maintaining a second identity and throwing every other match on purpose.</p>
+  <p>So there are two dials, and both are priced. There is no setting on either curve that is both profitable and safe. That's the actual deliverable: not a ban hammer, a tax that scales with how hard you press.</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- ============ 9. THE OBJECTION WE HAVEN'T ANSWERED ============ -->
+<section class="beat">
+  <div class="eyebrow">The hole in all of this</div>
+  <h2>Every detector here needs matches. A fresh account has none.</h2>
+  <p>The wager evidence resolves a case in a median of fourteen matches. That is far quicker than a rating converges, and it is not zero - which leaves the shark one obvious move. Burn the account and open a new one. New accounts start in the middle of the distribution because nothing in the system has any reason to think otherwise, and the fourteen-match clock restarts in a fresh set of beginner lobbies.</p>
+  <p>I don't think that's unfixable, and it isn't fixable with anything on this page. It needs a completely different kind of evidence: not what happened in the match, but <b>how the player moved</b> - which is visible immediately, and which a rating system throws away.</p>
+  <p>That turns out to be its own project, with its own uncomfortable questions, so it gets its own writeup rather than a hurried final act here. <span class="dim">The short version: you can train reinforcement-learning agents to a measured ladder of skill before your game has any players at all, and use them as the labelled data a behavioural classifier needs. Whether an agent's blunders look anything like a beginner's is exactly the part worth being sceptical about, and that's the experiment.</span></p>
+</section>
+
+<div class="rule"></div>
+
+<div class="caveats" id="caveats">
+  <h4>What this doesn't claim</h4>
+  <div class="c"><span><b>This is evidence, not proof.</b> A likelihood ratio crossing a threshold is grounds for a review queue, not an automated ban. At the 0.5% false-positive rate above, a platform with 200,000 players accuses a thousand innocent people per sweep. The detector's output is a ranking and a strength of evidence; what you do with it is a policy question with an appeal process attached.</span></div>
+  <div class="c"><span><b>Every player here is simulated.</b> The archetypes - the whale, the tilter, the cautious bettor - are my guesses at what awkward honest behaviour looks like, and real populations will contain confounds I didn't think of. Shared accounts, coaching, someone playing drunk on Fridays, a genuine skill jump after a patch. The numbers on this page are a demonstration that the method has the properties claimed, not a forecast of its accuracy on your game.</span></div>
+  <div class="c"><span><b>The adversary here doesn't adapt.</b> A real shark reads the detector's published behaviour and responds. The economics section is the honest defence - the evasion is priced, not blocked - but it assumes the shark's only lever is the bet-outcome correlation. Collusion between accounts, or a syndicate spreading one bankroll across many identities, breaks the per-player framing entirely.</span></div>
+  <div class="c"><span><b>Fresh accounts remain the open hole.</b> Nothing here places a player before their first match, so an operator who bans on this evidence should expect the same people back under new names, and should count re-registration cost as part of the defence rather than assume the detector covers it.</span></div>
+</div>
+
+<section class="beat">
+  <div class="eyebrow win">What it costs</div>
+  <h2>The bill.</h2>
+  <p>You need wager data joined to match data, which most skill-gaming platforms already have and most traditional games don't. Without stakes attached to matches, none of this applies - the entire method is built on a number that only exists when there is money on the table.</p>
+  <p>You need somewhere to put the accusations. A detector that produces a ranked list and no review process is worse than no detector, because it launders a statistical judgement into an operational one.</p>
+  <p>The population fit is genuinely offline: minutes of MCMC over the whole player base, re-run occasionally. The serving path is a running sum per player per match, which costs nothing. The expensive part is not compute, it's the review queue and the honesty to treat scoring your own players as the surveillance question it is.</p>
+</section>
+
+<section class="outro">
+  <h2>The bet is the confession.</h2>
+  <p>A cheat can control what the scoreboard says about them. They cannot control what they need from it. Point the test at the thing they came for and their discipline stops helping.</p>
+  <div class="links">
+    <a href="https://github.com/orbitope/sharkhunt">Source</a>
+    <a href="https://github.com/orbitope/sharkhunt/blob/main/sharkhunt/detectors.py">Detectors</a>
+    <a href="https://github.com/orbitope/sharkhunt/blob/main/sharkhunt/hierarchical.py">Population model</a>
+  </div>
+  <p class="foot">Shark hunt · Orbitope</p>
+</section>
+
+</div>
+<script src="rng.js"></script>
+<script src="sharkhunt.js"></script>
+<script src="data.js"></script>
+<script src="widgets.js"></script>
+</body>
+</html>

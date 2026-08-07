@@ -1,0 +1,61 @@
+reusing cached game A fit from analysis/fit_a.json
+  play [0.052 0.253 0.694] tank [0.751 0.207 0.043] auc 1.0 in 953.3s
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 10 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+  B n=  25 cold  auc 0.957 profile_err 1.103 caught 100% (19.5s)
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 16 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+  B n=  25 warm  auc 0.978 profile_err 0.142 caught 100% (22.2s)
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 19 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+  B n=  50 cold  auc 0.227 profile_err 1.345 caught 0% (27.0s)
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 27 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+  B n=  50 warm  auc 0.993 profile_err 0.108 caught 100% (34.0s)
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 38 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+  B n= 100 cold  auc 0.660 profile_err 0.797 caught 100% (45.3s)
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 55 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+  B n= 100 warm  auc 1.000 profile_err 0.165 caught 100% (61.4s)
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 86 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+  B n= 200 cold  auc 0.351 profile_err 1.630 caught 0% (94.4s)
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (2 chains in 1 job)
+NUTS: [prevalence, prior_strength, population_profile, play_profile, tank_profile, weights]
+Sampling 2 chains for 500 tune and 500 draw iterations (1_000 + 1_000 draws total) took 111 seconds.
+We recommend running at least 4 chains for robust computation of convergence diagnostics
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+  B n= 200 warm  auc 0.986 profile_err 0.423 caught 100% (119.2s)
+
+wrote analysis/fits.json
