@@ -18,6 +18,15 @@
 <meta property="og:title" content="Hunting Sharks: Catching Rating Manipulators by What They Bet">
 <meta property="og:description" content="Outcome-based rating systems cannot see a player who deliberately loses. Their wagers can. Building the detector, breaking it twice, then learning its hypothesis from the population instead of guessing it.">
 <meta property="og:type" content="article">
+<meta property="og:url" content="https://orbitope.com/sharkhunt/">
+<meta property="og:image" content="https://orbitope.com/sharkhunt/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://orbitope.com/sharkhunt/">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "Hunting Sharks: Catching Rating Manipulators by What They Bet", "description": "Outcome-based rating systems cannot see a player who deliberately loses. Their wagers can. Building the detector, breaking it twice, then learning its hypothesis from the population instead of guessing it.", "image": "https://orbitope.com/sharkhunt/og.png", "url": "https://orbitope.com/sharkhunt/", "datePublished": "2026-08-01", "author": {"@type": "Person", "name": "Matthew Burke"}, "publisher": {"@type": "Organization", "name": "Orbitope"}}
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111009'/%3E%3Cpath d='M8 40 L32 8 L56 40 Z' fill='none' stroke='%23E8C068' stroke-width='4.4' stroke-linejoin='round'/%3E%3Cpath d='M8 48 Q20 42 32 48 T56 48' fill='none' stroke='%236B7A8D' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -169,6 +178,10 @@
     font-size:12px;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
   .links a:hover{border-color:var(--amber);color:var(--amber-bright);background:rgba(196,154,60,.06)}
   .foot{margin-top:34px;font-size:11px;color:var(--text-muted);letter-spacing:.1em}
+
+/* Inline links to sibling Orbitope articles. Scoped to its own class because these pages do not all style a bare <a>. */
+.xref{color:var(--amber-bright,#E8C068);text-decoration:none;border-bottom:1px solid rgba(232,192,104,.38);transition:border-color .2s}
+.xref:hover{border-bottom-color:var(--amber-bright,#E8C068)}
 </style>
 </head>
 <body>
@@ -186,7 +199,7 @@
 <section class="beat">
   <div class="eyebrow">The asymmetry</div>
   <h2>A smurf ruins your evening. A shark takes your rent.</h2>
-  <p>A smurf is an experienced player on a fresh account, stomping beginners for fun. It's annoying, matchmaking eventually sorts it out, and the cost is a bad hour.</p>
+  <p>A smurf is an experienced player on a fresh account, stomping beginners for fun. It's annoying, <a class="xref" href="https://orbitope.com/coldopen/">matchmaking eventually sorts it out</a>, and the cost is a bad hour.</p>
   <p>Change one thing - make the matches wagered, for real money - and the same behaviour becomes a business. Now the incentive is not to enjoy easy games but to <b>stay</b> in easy games, indefinitely, because the low bracket is where the profitable opponents are. That means actively managing your rating downward - losing on purpose, <b>tanking</b>, at whatever rate keeps the number where the money is. The industry word for this player is a shark, and unlike a smurf they have every reason to be patient and unremarkable.</p>
   <p>To see why they get away with it, you need ninety seconds on how the scoreboard works.</p>
 </section>
