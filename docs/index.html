@@ -40,7 +40,82 @@
     --mauve:#9A7AB0; --sage:#7D9A6A; --terra:#C47A5A; --coral:#FF5E3A;
     --text-bright:#EDE8DC; --text-primary:#C8C2B4; --text-muted:#6A6358;
     --font-display:'Rajdhani',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  
+    --fig-bg:#0d0c07; --slate:#3f4a56; --border-strong:#3d3a30;
   }
+
+  /* ── Accessibility mode ────────────────────────────────────────────────
+     Engaged by the control in the corner, or automatically under
+     `prefers-contrast: more`. Three things change, in the order they
+     actually matter to a reader:
+
+       1. the data-series tokens move to a scale separated by LIGHTNESS as
+          well as hue. The house scale separates by hue alone, so sage and
+          terra land 20.4 apart under simulated deuteranopia — the same
+          colour, for the ~5% of men who have it.
+       2. hairlines get a 2px floor and decorative opacity is dropped.
+          Presentation attributes lose to any CSS declaration, so this
+          reaches the stroke widths figure JS sets inline, without a redraw.
+       3. where a figure encodes category by colour alone, it gains a
+          second channel — shape, or a letter.
+
+     (3) is what does the real work. Colour alone cannot be made
+     colour-blind-safe at five-plus categories: any set of hues at one
+     lightness collapses for somebody. The palette only buys margin, which
+     is why these hues can stay in the house families rather than going
+     electric to chase a separation number.                              */
+  html[data-a11y]{
+    --amber:#D9B45F; --amber-bright:#F2CF79;
+    --steel:#79BCF3; --steel-bright:#A8D2F7;
+    --mauve:#B563C6; --sage:#668442; --terra:#DB8F6D; --coral:#D45F77;
+    --slate:#4F9D99;
+    --text-muted:#A39B8C;      /* house var(--text-muted) is 3.21:1 — under the floor */
+    --text-primary:#DED8CA;
+    --border:#6E6959;          /* house var(--border) is 1.29:1 */
+    --border-strong:#837D6B;
+    --stroke-floor:2px;
+    --mark-opacity:1;
+  }
+  /* A blanket stroke-width would also thin the strokes that are deliberately
+     heavy. CSS cannot take a max against a presentation attribute, so raise
+     the thin values by name. */
+  html[data-a11y] .fig svg [stroke-width="1"],
+  html[data-a11y] .fig svg [stroke-width="1.5"],
+  html[data-a11y] .fig svg [stroke-width="0.5"],
+  html[data-a11y] .fig svg [stroke-width=".5"],
+  html[data-a11y] figure svg [stroke-width="1"],
+  html[data-a11y] figure svg [stroke-width="1.5"]{stroke-width:var(--stroke-floor)}
+  /* Decorative transparency halves effective contrast: a .72-opacity mark at
+     4.47:1 lands at 2.84:1, under the 3:1 floor for a graphic. */
+  html[data-a11y] figure svg [opacity]{opacity:var(--mark-opacity)}
+
+  .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+    clip-path:inset(50%);white-space:nowrap;border:0}
+  .kbd-hint{font-size:10px;color:var(--text-muted);letter-spacing:.04em}
+
+  /* The control that turns on legibility must not itself be the least legible
+     thing on the page. 10.7:1 resting, 44px target, first tab stop. */
+  .a11y-btn{position:fixed;top:14px;right:14px;z-index:60;display:inline-flex;align-items:center;
+    justify-content:center;gap:7px;min-height:44px;
+    font-family:var(--font-display,sans-serif);font-weight:600;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;background:rgba(26,24,18,.92);backdrop-filter:blur(6px);
+    color:var(--text-primary);border:1px solid var(--border-strong,#3d3a30);border-radius:4px;
+    padding:7px 13px;cursor:pointer;transition:.2s}
+  .a11y-btn:hover{color:var(--text-bright);border-color:var(--amber)}
+  .a11y-btn:focus-visible{outline:3px solid var(--amber-bright);outline-offset:3px}
+  .a11y-btn svg{flex:none}
+  /* State is not carried by colour. Amber-vs-bone is invisible to exactly the
+     readers this control exists for, so on/off is spelled out in the label and
+     the icon flips fill as well. */
+  .a11y-btn .state{font-weight:700}
+  .a11y-btn .state::after{content:"OFF"}
+  .a11y-btn[aria-pressed="true"]{color:var(--amber-bright);border-color:var(--amber);
+    background:rgba(196,154,60,.16);box-shadow:inset 0 0 0 1px var(--amber)}
+  .a11y-btn[aria-pressed="true"] .state::after{content:"ON"}
+  .a11y-btn[aria-pressed="true"] .half{transform:rotate(180deg);transform-origin:12px 12px}
+  @media(max-width:560px){.a11y-btn .txt{position:absolute;width:1px;height:1px;overflow:hidden;
+    clip-path:inset(50%)}.a11y-btn{min-width:44px;padding:8px 10px}}
+
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   body{background:var(--void);color:var(--text-primary);font-family:var(--font-mono);
@@ -80,7 +155,7 @@
   .beat .mauve{color:var(--mauve)}
   .rule{width:1px;height:60px;margin:0 auto;background:linear-gradient(transparent,var(--border),transparent)}
 
-  .fig{max-width:940px;margin:34px auto;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#0d0c07}
+  .fig{max-width:940px;margin:34px auto;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--fig-bg)}
   .fig figcaption,.fig .cap{font-size:11px;color:var(--text-muted);padding:11px 16px;border-top:1px solid var(--border);letter-spacing:.03em;line-height:1.6}
   .fig .cap b{color:var(--text-primary);font-weight:500}
   .fig .cap .amber{color:var(--amber-bright)} .fig .cap .sage{color:var(--sage)}
@@ -94,8 +169,8 @@
     border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);letter-spacing:.04em;flex-wrap:wrap}
   .wdg-head b{color:var(--text-bright);font-weight:500}
   .tag{font-weight:500;letter-spacing:.12em;padding:3px 10px;border-radius:3px;font-size:11px;white-space:nowrap}
-  .tag.ok{color:#0d0c07;background:var(--sage)} .tag.no{color:#0d0c07;background:var(--coral)}
-  .tag.warn{color:#0d0c07;background:var(--amber)}
+  .tag.ok{color:var(--fig-bg);background:var(--sage)} .tag.no{color:var(--fig-bg);background:var(--coral)}
+  .tag.warn{color:var(--fig-bg);background:var(--amber)}
   .tag.idle{color:var(--text-muted);border:1px solid var(--border)}
   .wdg-foot{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);
     display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
@@ -104,7 +179,7 @@
   .btn:hover{color:var(--text-bright);border-color:var(--amber)}
   .btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
   .btn:disabled{opacity:.35;cursor:default}
-  .btn.on{color:#0d0c07;background:var(--amber);border-color:var(--amber)}
+  .btn.on{color:var(--fig-bg);background:var(--amber);border-color:var(--amber)}
 
   .toggle-row{display:flex;border-bottom:1px solid var(--border);flex-wrap:wrap}
   .toggle{flex:1 1 auto;padding:12px 6px;font-family:var(--font-display);font-weight:600;font-size:12px;
@@ -185,6 +260,17 @@
 </style>
 </head>
 <body>
+<!-- orbitope:a11y-control — self-contained; move as one block. -->
+<button id="a11yBtn" class="a11y-btn" type="button" aria-pressed="false"
+        title="High-contrast, colour-blind-safe figures">
+  <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none"
+       stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="12" cy="12" r="9"/>
+    <path class="half" d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none"/>
+  </svg>
+  <span class="txt">Contrast</span><span class="state"></span>
+</button>
+
 <div class="progress" id="progress"></div>
 <div class="wrap">
 
@@ -217,8 +303,8 @@
 <figure class="fig reveal">
   <div class="wdg-head"><span>rating over <b>400</b> wagered matches</span><span class="tag idle" id="pin_tag">drifting</span></div>
   <div class="ctl">
-    <label>hidden skill <input type="range" id="pin_delta" min="0" max="800" step="50" value="400"><span class="v" id="pin_delta_v">+400</span></label>
-    <label>tank rate <input type="range" id="pin_tau" min="0" max="80" step="1" value="0"><span class="v" id="pin_tau_v">0%</span></label>
+    <label>hidden skill <input type="range" id="pin_delta" min="0" max="800" step="50" value="400" aria-label="Drifting hidden skill, rating points"><span class="v" id="pin_delta_v">+400</span></label>
+    <label>tank rate <input type="range" id="pin_tau" min="0" max="80" step="1" value="0" aria-label="Tank rate, percent"><span class="v" id="pin_tau_v">0%</span></label>
     <button class="btn" id="pin_solve">Solve for invisible</button>
   </div>
   <svg class="chart" id="pin_svg" viewBox="0 0 620 250" role="img" aria-label="rating trajectory"></svg>
@@ -227,7 +313,7 @@
     <span>rating drift <b class="big" id="pin_drift">—</b></span>
     <span>profit per match <b id="pin_profit">—</b></span>
   </div>
-  <div class="cap" id="pin_cap"></div>
+  <figcaption class="cap" id="pin_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -247,7 +333,7 @@
 
 <span class="c"># +400 Elo of hidden skill, even matchup:  tau* = 0.460</span>
 <span class="c"># At tau* the observed win rate is 0.500 - the honest number, exactly.</span></pre>
-  <div class="cap">At <b>tau*</b> the shark's wins and losses follow the <b>identical</b> distribution an honest player's would. Not similar. Identical.</div>
+  <figcaption class="cap" id="cap-2">At <b>tau*</b> the shark's wins and losses follow the <b>identical</b> distribution an honest player's would. Not similar. Identical.</figcaption>
 </figure>
 
 <section class="beat">
@@ -282,7 +368,7 @@
       <button class="btn" id="sprt_reset">Reset</button>
     </span>
   </div>
-  <div class="cap" id="sprt_cap"></div>
+  <figcaption class="cap" id="sprt_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -312,7 +398,7 @@
 <span class="k">class</span> <span class="f">WeightedLLR</span>(OutcomeSPRT):
     <span class="k">def</span> <span class="f">increment</span>(self, obs):
         <span class="k">return</span> <span class="f">super</span>().<span class="f">increment</span>(obs) * STAKES[obs.tier] / <span class="f">max</span>(STAKES)</pre>
-  <div class="cap"><code>obs.tier</code> is which of the three bet sizes the player posted; the multiplier rescales that match's outcome evidence by the stake.</div>
+  <figcaption class="cap" id="cap-4"><code>obs.tier</code> is which of the three bet sizes the player posted; the multiplier rescales that match's outcome evidence by the stake.</figcaption>
 </figure>
 
 <section class="beat">
@@ -326,7 +412,7 @@
 <figure class="fig narrow reveal">
   <div class="wdg-head"><span>honest players resolved within 400 matches</span><span class="tag no">same thresholds</span></div>
   <div class="tblwrap"><table class="tbl" id="calib_tbl"></table></div>
-  <div class="cap">A cautious bettor's case essentially never closes; a whale's almost always does. Identical honest behaviour, wildly different treatment, because the <b>size of the steps</b> depends on stake while the thresholds don't move. The outcome-only test - which is a real likelihood ratio - treats all four the same, as a properly calibrated test should.</div>
+  <figcaption class="cap" id="cap-5">A cautious bettor's case essentially never closes; a whale's almost always does. Identical honest behaviour, wildly different treatment, because the <b>size of the steps</b> depends on stake while the thresholds don't move. The outcome-only test - which is a real likelihood ratio - treats all four the same, as a properly calibrated test should.</figcaption>
 </figure>
 
 <section class="beat">
@@ -357,7 +443,7 @@ P(t, y | H1) = tau     * phi_tank[t] * Bernoulli(y ; <span class="n">0.02</span>
 
 <span class="c"># Both sum to 1 over the six cells, so the ratio is a real</span>
 <span class="c"># likelihood ratio and the thresholds mean what they say again.</span></pre>
-  <div class="cap">The correlation is the fingerprint. Not the size of the bets - the fact that their size tracks the result.</div>
+  <figcaption class="cap" id="cap-6">The correlation is the fingerprint. Not the size of the bets - the fact that their size tracks the result.</figcaption>
 </figure>
 
 <section class="beat">
@@ -367,8 +453,8 @@ P(t, y | H1) = tau     * phi_tank[t] * Bernoulli(y ; <span class="n">0.02</span>
 <figure class="fig reveal">
   <div class="wdg-head"><span>evidence per match, by what you bet and what happened</span><span class="tag idle" id="cells_tag">even matchup</span></div>
   <div class="ctl">
-    <label>matchup <input type="range" id="cells_e" min="20" max="80" step="1" value="50"><span class="v" id="cells_e_v">50%</span></label>
-    <label>hidden skill <input type="range" id="cells_d" min="100" max="800" step="50" value="400"><span class="v" id="cells_d_v">+400</span></label>
+    <label>matchup <input type="range" id="cells_e" min="20" max="80" step="1" value="50" aria-label="Matchup evenness, percent"><span class="v" id="cells_e_v">50%</span></label>
+    <label>hidden skill <input type="range" id="cells_d" min="100" max="800" step="50" value="400" aria-label="Hidden skill, rating points"><span class="v" id="cells_d_v">+400</span></label>
   </div>
   <svg class="cells" id="cells_svg" viewBox="0 0 620 210" role="img" aria-label="evidence per observation type"></svg>
   <div class="legend">
@@ -376,7 +462,7 @@ P(t, y | H1) = tau     * phi_tank[t] * Bernoulli(y ; <span class="n">0.02</span>
     <span class="k"><i class="sw sq" style="background:var(--sage)"></i>exonerating</span>
     <span class="k"><i class="sw sq" style="background:var(--raised);border:1px solid var(--border)"></i>weighted score's view</span>
   </div>
-  <div class="cap" id="cells_cap"></div>
+  <figcaption class="cap" id="cells_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -402,7 +488,7 @@ P(next bet = tier t) = (count[t] + strength · pop[t]) / (n + strength)
 <span class="c"># count[t]:  how often THIS player has posted tier t so far</span>
 <span class="c"># pop[t]:    how often the whole field posts tier t</span>
 <span class="c"># strength:  how many phantom matches the population average is worth</span></pre>
-  <div class="cap">Each match is judged against the profile built from the matches <b>before</b> it, so no bet is ever allowed to explain itself.</div>
+  <figcaption class="cap" id="cap-8">Each match is judged against the profile built from the matches <b>before</b> it, so no bet is ever allowed to explain itself.</figcaption>
 </figure>
 
 <section class="beat">
@@ -420,7 +506,7 @@ P(next bet = tier t) = (count[t] + strength · pop[t]) / (n + strength)
       <button class="btn" id="duel_reseed">New player</button>
     </span>
   </div>
-  <div class="cap" id="duel_cap"></div>
+  <figcaption class="cap" id="duel_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -436,7 +522,7 @@ P(next bet = tier t) = (count[t] + strength · pop[t]) / (n + strength)
     <span class="k"><i class="sw" style="background:var(--coral)"></i>whales falsely accused</span>
     <span class="k"><i class="sw" style="background:var(--steel-bright)"></i>ordinary honest players falsely accused</span>
   </div>
-  <div class="cap" id="prior_cap"></div>
+  <figcaption class="cap" id="prior_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -460,7 +546,7 @@ P(next bet = tier t) = (count[t] + strength · pop[t]) / (n + strength)
 <span class="c"># six-cell tables. The weights sum to 1 and each table sums to 1, so the</span>
 <span class="c"># average still sums to 1: the ratio remains a genuine likelihood ratio.</span>
 P(t, y | H1) = sum_k  w[k] * P(t, y | H1 ; delta[k], tau[k])</pre>
-  <div class="cap">Grid: hidden skill of <b>200 / 400 / 700</b> crossed with tank rates <b>0 / .15 / .30 / .45 / .60</b>. Fifteen kinds of shark instead of one.</div>
+  <figcaption class="cap" id="cap-11">Grid: hidden skill of <b>200 / 400 / 700</b> crossed with tank rates <b>0 / .15 / .30 / .45 / .60</b>. Fifteen kinds of shark instead of one.</figcaption>
 </figure>
 
 <section class="beat">
@@ -470,7 +556,7 @@ P(t, y | H1) = sum_k  w[k] * P(t, y | H1 ; delta[k], tau[k])</pre>
 <figure class="fig reveal">
   <div class="wdg-head"><span>2,000 players · 300 matches each · 5% sharks</span><span class="tag ok">measured, not assumed</span></div>
   <div class="tblwrap"><table class="tbl" id="field_tbl"></table></div>
-  <div class="cap">The first row is the whole problem: a test that looks only at results catches <b>none</b> of the sharks who bother to hide. The wager-aware rows catch all of them, in a median of a couple of dozen matches, while accusing about half a percent of honest players.</div>
+  <figcaption class="cap" id="cap-12">The first row is the whole problem: a test that looks only at results catches <b>none</b> of the sharks who bother to hide. The wager-aware rows catch all of them, in a median of a couple of dozen matches, while accusing about half a percent of honest players.</figcaption>
 </figure>
 
 <div class="rule"></div>
@@ -497,7 +583,7 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
     [<span class="f">log1p</span>(-prevalence) + ll_honest,   <span class="c"># "I'm honest and produced this record"</span>
      <span class="f">log</span>(prevalence)    + ll_shark],   <span class="c"># "I'm a shark and produced this record"</span>
     axis=<span class="n">1</span>).<span class="f">sum</span>())</pre>
-  <div class="cap">Fitting is offline and occasional. <b>Serving stays closed-form</b> - each posterior draw becomes one mixture component, and scoring a live player is still a running sum you can do in a browser.</div>
+  <figcaption class="cap" id="cap-13">Fitting is offline and occasional. <b>Serving stays closed-form</b> - each posterior draw becomes one mixture component, and scoring a live player is still a running sum you can do in a browser.</figcaption>
 </figure>
 
 <section class="beat">
@@ -512,7 +598,7 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
     <span class="k"><i class="sw sq" style="background:var(--amber-bright)"></i>posterior mean</span>
     <span class="k"><i class="sw sq" style="background:var(--raised);border:1px solid var(--steel)"></i>ground truth</span>
   </div>
-  <div class="cap" id="fit_cap"></div>
+  <figcaption class="cap" id="fit_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -531,7 +617,7 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
     <span class="k"><i class="sw" style="background:var(--amber-bright)"></i>prior carried from the established title</span>
     <span class="k"><i class="sw" style="background:var(--steel-bright)"></i>fitted from scratch</span>
   </div>
-  <div class="cap" id="tr_cap"></div>
+  <figcaption class="cap" id="tr_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -557,7 +643,7 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
     <span class="k"><i class="sw" style="background:var(--sage)"></i>profit per match</span>
     <span class="k"><i class="sw" style="background:var(--coral)"></i>probability of being caught</span>
   </div>
-  <div class="cap" id="tax_cap"></div>
+  <figcaption class="cap" id="tax_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -573,7 +659,7 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
     <span class="k"><i class="sw" style="background:var(--sage)"></i>profit per match</span>
     <span class="k"><i class="sw" style="background:var(--amber-bright)"></i>matches survived before detection</span>
   </div>
-  <div class="cap" id="skill_cap"></div>
+  <figcaption class="cap" id="skill_cap"></figcaption>
 </figure>
 
 <section class="beat">
@@ -622,6 +708,27 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
 </section>
 
 </div>
+<!-- orbitope:a11y-control script — pairs with the button above. -->
+<script>
+(function(){
+  var KEY='orbitope-a11y', root=document.documentElement, btn=document.getElementById('a11yBtn');
+  function stored(){ try{ return localStorage.getItem(KEY); }catch(e){ return null; } }
+  function apply(on,persist){
+    if(on) root.setAttribute('data-a11y',''); else root.removeAttribute('data-a11y');
+    if(btn) btn.setAttribute('aria-pressed',on?'true':'false');
+    if(persist){ try{ localStorage.setItem(KEY,on?'on':'off'); }catch(e){} }
+    document.dispatchEvent(new CustomEvent('a11ychange',{detail:{on:on}}));
+  }
+  // No media query reports colour blindness, so prefers-contrast is only a
+  // hint. An explicit choice always wins, and it is shared across the site
+  // because every article sits on the one origin.
+  var pref=stored();
+  var auto=window.matchMedia&&window.matchMedia('(prefers-contrast: more)').matches;
+  apply(pref?pref==='on':!!auto,false);
+  if(btn) btn.addEventListener('click',function(){ apply(!root.hasAttribute('data-a11y'),true); });
+})();
+</script>
+
 <script src="rng.js"></script>
 <script src="sharkhunt.js"></script>
 <script src="data.js"></script>
