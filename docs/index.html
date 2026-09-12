@@ -279,7 +279,7 @@
 <header class="hero">
   <div class="kicker">Shark hunt · wager-aware sequential detection</div>
   <h1>A shark can fake losing. They can't fake <span class="accent">not caring about the money</span>.</h1>
-  <p class="sub">A player who is far better than their rating suggests, in a game where matches are played for money, has an obvious move: lose on purpose often enough that the rating never catches up, and keep farming beginners. Every rating system in wide use scores you on wins and losses, and one rate of losing on purpose - a <b>tank rate</b> - makes that record <b>exactly</b> what an honest player at that rating would produce. No test looking at results alone can ever separate the two. But they are there for the money, not the rating, and every match they have to decide how much to stake before the result is known - and unlike everyone else at the table, they have already decided whether they are trying. This page builds a detector out of that, breaks it twice on purpose, and then stops guessing what a cheater looks like and learns it from the population. No statistics beyond what the page explains as it goes; the simulations run live in your browser, and the two figures that needed an offline model fit say so.</p>
+  <p class="sub">A player who is far better than their rating suggests, in a game where matches are played for money, has an obvious move: lose on purpose often enough that the rating never catches up, and keep farming beginners. Every rating system in wide use scores you on wins and losses, and one rate of losing on purpose - a <b>tank rate</b> - makes that record <b>exactly</b> what an honest player at that rating would produce. No test looking at results alone can ever separate the two. But they are there for the money, and every match they have to decide how much to stake before the result is known - and unlike everyone else at the table, they have already decided whether they are trying. This page builds a detector out of that, breaks it twice on purpose, and then stops guessing what a cheater looks like and learns it from the population. No statistics beyond what the page explains as it goes; the simulations run live in your browser, and the two figures that needed an offline model fit say so.</p>
   <div class="scroll-cue">scroll</div>
 </header>
 
@@ -375,8 +375,8 @@
 
 <section class="beat">
   <p>The unconcealed shark gets caught every time, in a median of <b>56</b> matches. That is the test working. The honest players wander and mostly settle out the bottom, correctly cleared.</p>
-  <p>Now look at the <span class="amber">amber</span> line. It doesn't climb, and it doesn't hover either - it drifts <b>down</b>, the same direction as the honest players, and eventually exits through the "this player is fine" boundary. Over 2,000 simulated players, an outcome-only test caught <b class="coral">0.0%</b> of sharks tanking at tau*, and exonerated most of them.</p>
-  <p>That's the worst possible failure. The test doesn't merely fail to flag the shark; it clears them.</p>
+  <p>Now look at the <span class="amber">amber</span> line. It drifts <b>down</b>, the same direction as the honest players, and eventually exits through the "this player is fine" boundary. Over 2,000 simulated players, an outcome-only test caught <b class="coral">0.0%</b> of sharks tanking at tau*, and exonerated most of them.</p>
+  <p>That's the worst possible failure. The test clears the shark.</p>
 </section>
 
 <div class="rule"></div>
@@ -389,7 +389,7 @@
 
   <h3>What a shark controls</h3>
   <p>What they don't control is the result. <b>Being better is not the same as winning</b>. Hiding 400 Elo means winning about <b>91%</b> of the matches you try to win - not all of them. And a match you are throwing still gets won <b>2%</b> of the time, because your opponent can blunder badly enough that you win despite yourself. Over a hundred matches, our shark takes about <b class="coral">five losses they never intended</b> and backs into <b class="coral">one win they didn't want</b>.</p>
-  <p>What they do control is <b>intent</b> - try, or throw - fixed before the bet is placed. The stake therefore reveals the intent, not the outcome, and intent only correlates with the outcome rather than fixing it.</p>
+  <p>What they do control is <b>intent</b> - try, or throw - fixed before the bet is placed. The stake therefore reveals the intent, and intent only correlates with the outcome rather than fixing it.</p>
   <p>An honest player's stake cannot correlate with their result at all, because nothing they know beforehand predicts it. A shark's stake correlates with theirs <b>imperfectly but relentlessly</b>. That gap is the entire signal, and its imperfection is why no single match ever proves anything - a big bet that loses is something a shark does, roughly one time in eleven. It is why this has to be a test that accumulates, and why it takes a couple of dozen matches rather than one.</p>
   <p>Before using it, the ground rules for the money on this page - every profit number later depends on them. A bet is one of three sizes, tiers <b>min</b>, <b>mid</b> and <b>max</b>, at 10%, 40% and 100% of the table cap. Both players post the same stake, the winner takes the pot, and the house keeps a <b>5% cut</b> of it. The cut means a fair match is slightly worse than break-even: an honest player, matched fairly, loses money slowly. That slow loss is the baseline any cheat has to beat before the cheating pays for itself.</p>
   <p>The obvious way to use the stakes is to keep the same test and scale each match's evidence by the size of the bet, so a big bet counts heavily and a tiny one barely at all. Call it the wager-weighted score.</p>
@@ -428,7 +428,7 @@
 <section class="beat">
   <div class="eyebrow">The fix</div>
   <h2>Model the bet instead of weighting the evidence.</h2>
-  <p>The weighting was a patch bolted onto the old test. The real fix is to change what one observation <i>is</i>. Until now the detector saw one thing per match - won or lost - and the bet came in from the side as a multiplier. Instead, make the observation the <b>pair</b>: which of the three tiers they bet, and whether they won. Three tiers times two results gives six possible observations, and each hypothesis now has to put a probability on all six. That is what a <b>joint distribution</b> is - "joint" because it prices the bet and the outcome <i>together</i>, so it can express a relationship between them, not just their separate frequencies.</p>
+  <p>The weighting was a patch bolted onto the old test. The real fix is to change what one observation <i>is</i>. Until now the detector saw one thing per match - won or lost - and the bet came in from the side as a multiplier. Instead, make the observation the <b>pair</b>: which of the three tiers they bet, and whether they won. Three tiers times two results gives six possible observations, and each hypothesis now has to put a probability on all six. That is what a <b>joint distribution</b> is - "joint" because it prices the bet and the outcome <i>together</i>, so it can express a relationship between them, which their separate frequencies cannot.</p>
   <p>And the relationship is exactly where the two hypotheses disagree. Under <span class="sage">H0</span> the stake can't know something the player doesn't, so bet and outcome are <b>independent</b>: the probability of any pair is just how often they post that tier, times how often they win. Under <span class="coral">H1</span> the pair shares a hidden cause - the shark's private decision, made before betting, about whether this is a match they intend to win. That one decision pushes the bet and the result in the same direction, which is the correlation an honest player has no way to produce.</p>
   <p>Writing it down takes three ingredients, each a short list of probabilities: <code>pi</code>, how often this player posts each tier when nothing is going on; <code>phi_play</code>, how a shark bets on matches they mean to win; <code>phi_tank</code>, how they bet on matches they mean to throw. For now every one of these is <i>assumed</i> - plausible values I wrote down by hand, which a later section replaces with fitted ones.</p>
 </section>
@@ -445,7 +445,7 @@ P(t, y | H1) = tau     * phi_tank[t] * Bernoulli(y ; <span class="n">0.02</span>
 
 <span class="c"># Both sum to 1 over the six cells, so the ratio is a real</span>
 <span class="c"># likelihood ratio and the thresholds mean what they say again.</span></pre>
-  <figcaption class="cap" id="cap-6">The tell is that bet size tracks the result, not the size of the bets by itself.</figcaption>
+  <figcaption class="cap" id="cap-6">The tell is that bet size tracks the result.</figcaption>
 </figure>
 
 <section class="beat">
@@ -552,7 +552,7 @@ P(t, y | H1) = sum_k  w[k] * P(t, y | H1 ; delta[k], tau[k])</pre>
 </figure>
 
 <section class="beat">
-  <p>That closes the hole. Both shark styles are now caught at 100%, false positives are unchanged, and on the blatant shark the mixture is <b>four times faster</b> than the outcome test - a median of <b>13</b> matches against <b>56</b> - because it gets to use the bets as well. It costs a little sharpness on the awkward middle cases, which the table below reports rather than hides.</p>
+  <p>That closes the hole. Both shark styles are now caught at 100%, false positives are unchanged, and on the blatant shark the mixture is <b>four times faster</b> than the outcome test - a median of <b>13</b> matches against <b>56</b> - because it gets to use the bets as well. It costs a little sharpness on the awkward middle cases, which the table below reports.</p>
 </section>
 
 <figure class="fig reveal">
@@ -623,8 +623,8 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
 </figure>
 
 <section class="beat">
-  <p>The cold-start line doesn't climb, it thrashes. At two of the four sizes it lands <b>below a coin flip</b> - it found the mirror-image answer and ranked the cheaters as the safest players on the platform. More players don't fix it, because the problem isn't a shortage of evidence; it's that two different explanations fit the same data about equally well and nothing tells the sampler which one we meant.</p>
-  <p>The transferred prior settles that, not by adding data but by carrying over the statement <b>this is what a cheat looks like</b> from a game where we had enough evidence to learn it. The local data then adjusts the details.</p>
+  <p>The cold-start line thrashes. At two of the four sizes it lands <b>below a coin flip</b> - it found the mirror-image answer and ranked the cheaters as the safest players on the platform. More players don't fix it, because two different explanations fit the same data about equally well and nothing tells the sampler which one we meant.</p>
+  <p>The transferred prior settles that by carrying over the statement <b>this is what a cheat looks like</b> from a game where we had enough evidence to learn it. The local data then adjusts the details.</p>
   <p><span class="dim">Transfer isn't the only way to break that symmetry - an ordering constraint on the components would do it, and so would a handful of confirmed cases to anchor the labels. It is the one that doesn't require you to already have caught somebody.</span></p>
 </section>
 
@@ -666,7 +666,7 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
 
 <section class="beat">
   <p>Hiding less buys time but not immunity. It stretches survival by about <b>two and a half times</b> - and costs roughly <b>two thirds</b> of the edge to do it. Below about 200 Elo of concealed skill the arithmetic has already stopped being worth the trouble, and that is before counting the effort of maintaining a second identity and throwing every other match on purpose.</p>
-  <p>So both evasions are priced. No setting on either curve is both profitable and safe. The deliverable is a tax that scales with how hard you press, not a ban.</p>
+  <p>So both evasions are priced. No setting on either curve is both profitable and safe. The deliverable is a tax that scales with how hard you press.</p>
 </section>
 
 <div class="rule"></div>
@@ -684,9 +684,9 @@ pi[p]  ~ <span class="f">Dirichlet</span>(strength * pop_profile)  <span class="
 
 <div class="caveats" id="caveats">
   <h4>What this doesn't claim</h4>
-  <div class="c"><span><b>This is evidence, not proof.</b> A likelihood ratio crossing a threshold is grounds for a review queue, not an automated ban. At the 0.5% false-positive rate above, a platform with 200,000 players accuses a thousand innocent people per sweep. The detector's output is a ranking and a strength of evidence; what you do with it is a policy question with an appeal process attached.</span></div>
-  <div class="c"><span><b>Every player here is simulated.</b> The archetypes - the whale, the tilter, the cautious bettor - are my guesses at what awkward honest behavior looks like, and real populations will contain confounds I didn't think of. Shared accounts, coaching, someone playing drunk on Fridays, a skill jump after a patch. The numbers on this page are a demonstration that the method has the properties claimed, not a forecast of its accuracy on your game.</span></div>
-  <div class="c"><span><b>The adversary here doesn't adapt.</b> A real shark reads the detector's published behavior and responds. The economics section is the honest defense - the evasion is priced, not blocked - but it assumes the shark's only option is the bet-outcome correlation. Collusion between accounts, or a syndicate spreading one bankroll across many identities, breaks the per-player framing entirely.</span></div>
+  <div class="c"><span><b>A flagged player has not been proven to cheat.</b> A likelihood ratio crossing a threshold is grounds for a review queue. At the 0.5% false-positive rate above, a platform with 200,000 players accuses a thousand innocent people per sweep. The detector's output is a ranking and a strength of evidence; what you do with it is a policy question with an appeal process attached.</span></div>
+  <div class="c"><span><b>Every player here is simulated.</b> The archetypes - the whale, the tilter, the cautious bettor - are my guesses at what awkward honest behavior looks like, and real populations will contain confounds I didn't think of. Shared accounts, coaching, someone playing drunk on Fridays, a skill jump after a patch. The numbers on this page demonstrate that the method has the properties claimed; they do not forecast its accuracy on your game.</span></div>
+  <div class="c"><span><b>The adversary here doesn't adapt.</b> A real shark reads the detector's published behavior and responds. The economics section is the honest defense - it prices the evasion - but it assumes the shark's only option is the bet-outcome correlation. Collusion between accounts, or a syndicate spreading one bankroll across many identities, breaks the per-player framing entirely.</span></div>
   <div class="c"><span><b>Fresh accounts remain the open hole.</b> Nothing here places a player before their first match, so an operator who bans on this evidence should expect the same people back under new names, and should count re-registration cost as part of the defense rather than assume the detector covers it.</span></div>
 </div>
 
